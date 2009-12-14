@@ -231,3 +231,34 @@ sub DESTROY
 
 1;# return true:
 
+=pod
+
+=head1 NAME
+
+ASP4::SessionStateManager - Per-user state persistence
+
+=head1 SYNOPSIS
+
+  You've seen this page <%= $Session->{counter}++ %> times before.
+
+=head1 DESCRIPTION
+
+Web applications require session state management - and the simpler, the better.
+
+C<ASP4::SessionStateManager> is a simple blessed hash.  When it goes out of scope,
+it is saved to the database (or whatever).
+
+If no changes were made to the session, it is not saved.
+
+=head1 PUBLIC METHODS
+
+=head2 save( )
+
+Causes the session data to be saved.
+
+=head2 reset( )
+
+Causes the session data to be emptied.
+
+=cut
+

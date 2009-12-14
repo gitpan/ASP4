@@ -48,6 +48,7 @@ sub setup_request
   $s->{response}  ||= ASP4::Response->new();
   $s->{server}    ||= ASP4::Server->new();
   
+  my $do_session_onstart;
   if( $s->do_disable_session_state )
   {
     $s->{session} ||= ASP4::SessionStateManager::NonPersisted->new( $s->r );
@@ -55,12 +56,21 @@ sub setup_request
   else
   {
     $s->{session}   ||= $s->config->data_connections->session->manager->new( $s->r );
+    $do_session_onstart++;
   }# end if()
   
   $s->{global_asa} = $s->resolve_global_asa_class( );
   {
     no warnings 'uninitialized';
     $s->{global_asa}->init_asp_objects( $s );
+    if( $do_session_onstart )
+    {
+      unless( $s->session->{__started} )
+      {
+        $s->handle_phase( $s->global_asa->can('Session_OnStart') );
+        $s->session->{__started} = 1;
+      }# end unless()
+    }# end if()
   }
   
   eval {
@@ -232,6 +242,9 @@ sub end_request
 {
   my $s = shift;
   
+  $s->handle_phase( $s->global_asa->can('Script_OnEnd') )
+    unless $s->{did_end};
+  
   $s->response->End;
   $s->session->save;
   my $res = $s->response->Status =~ m/^200/ ? 0 : $s->response->Status;
@@ -289,4 +302,59 @@ sub DESTROY
 }# end DESTROY()
 
 1;# return true:
+
+=pod
+
+=head1 NAME
+
+ASP4::HTTPContext - Provides access to the intrinsic objects for an HTTP request.
+
+=head1 SYNOPSIS
+
+
+=head1 DESCRIPTION
+
+The HTTPContext itself is the root of all request-processing in an ASP4 web application.
+
+There is only one ASP4::HTTPContext instance throughout the lifetime of a request.
+
+=head1 PROPERTIES
+
+=head2 current
+
+Returns the C<ASP4::HTTPContext> object in use for the current HTTP request.
+
+=head2 request
+
+Returns the L<ASP4::Request> for the HTTP request.
+
+=head2 response
+
+Returns the L<ASP4::Response> for the HTTP request.
+
+=head2 server
+
+Returns the L<ASP4::Server> for the HTTP request.
+
+=head2 session
+
+Returns the L<ASP4::SessionStateManager> for the HTTP request.
+
+=head2 stash
+
+Returns the current stash hash in use for the HTTP request.
+
+=head2 config
+
+Returns the current C<ASP4::Config> for the HTTP request.
+
+=head2 cgi
+
+Provided B<Just In Case> - returns the L<CGI> object for the HTTP request.
+
+=head2 r
+
+Provided B<Just In Case> - returns the L<Apache2::RequestRec> for the HTTP request.
+
+=cut
 

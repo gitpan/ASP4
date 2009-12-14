@@ -108,7 +108,7 @@ sub SetCookie
 {
   my ($s, %args) = @_;
   
-  $args{domain} ||= $ENV{HTTP_HOST};
+  $args{domain} ||= eval { $s->context->config->data_connections->session->cookie_domain } || $ENV{HTTP_HOST};
   $args{path}   ||= '/';
   my @parts = ( );
   push @parts, $s->context->server->URLEncode($args{name}) . '=' . $s->context->server->URLEncode($args{value});
@@ -116,7 +116,27 @@ sub SetCookie
   push @parts, 'path=' . $args{path};
   if( $args{expires} )
   {
-    push @parts, 'expires=' . $args{expires};
+    if( my ($num,$type) = $args{expires} =~ m/^(\-?\d+)([MHD])$/ )
+    {
+      my $expires;
+      if( $type eq 'M' ) {
+        # Minutes:
+        $expires = time() + ( $num * 60 );
+      }
+      elsif( $type eq 'H' ) {
+        # Hours:
+        $expires = time() + ( $num * 60 * 60 );
+      }
+      elsif( $type eq 'D' ) {
+        # Days:
+        $expires = time() + ( $num * 60 * 60 * 24 );
+      }# end if()
+      push @parts, 'expires=' . time2str( $expires );
+    }
+    else
+    {
+      push @parts, 'expires=' . time2str( $args{expires} );
+    }# end if()
   }# end if()
   $s->AddHeader( 'Set-Cookie' => join('; ', @parts) . ';' );
 }# end SetCookie()
@@ -204,4 +224,237 @@ sub DESTROY
 }# end DESTROY()
 
 1;# return true:
+
+=pod
+
+=head1 NAME
+
+ASP4::Response - Interface to the outgoing HTTP response
+
+=head1 SYNOPSIS
+
+  $Response->ContentType("text/html");
+  
+  $Response->Status( 200 );
+  
+  $Response->Clear();
+  
+  $Response->Flush();
+
+  $Response->Write("Hello, World!");
+  
+  $Response->AddHeader( 'x-awesomeness' => '100%' );
+  
+  $Response->SetCookie(
+    # Required parameters:
+    name    => "customer-email",
+    value   => $Form->{email},
+    
+    # The rest are optional:
+    expires => '30D', # 30 days
+    path    => '/',
+    domain  => '.mysite.com',
+  );
+  
+  $Response->Redirect( "/path/to/page.asp" );
+  
+  $Response->Include( $Server->MapPath("/my/include.asp") );
+  $Response->Include( $Server->MapPath("/my/include.asp"), \%args );
+  
+  my $string = $Response->TrapInclude( $Server->MapPath("/my/widget.asp") );
+  my $string = $Response->TrapInclude( $Server->MapPath("/my/widget.asp"), \%args );
+  
+  return $Response->Declined;
+  
+  $Response->End;
+  
+  while( 1 ) {
+    last unless $Response->IsClientConnected();
+    $Response->Write("Still Here!<br/>");
+    sleep(1);
+  }
+  
+  my HTTP::Headers $headers = $Response->Headers;
+  
+  # Read-only:
+  my $expires_on = $Response->ExpiresAbsolute;
+
+=head1 DESCRIPTION
+
+The C<$Response> object offers a unified interface to send content back to the client.
+
+=head1 PROPERTIES
+
+=head2 ContentType( [$type] )
+
+Sets or gets the C<content-type> header for the response.  Examples are C<text/html>, C<image/gif>, C<text/csv>, etc.
+
+=head2 Status( [$status] )
+
+Sets or gets the C<Status> header for the response.  See L<http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html> for details.
+
+B<NOTE:> Only the numeric part is necessary - eg: 200, 301, 404, etc.
+
+=head2 Headers()
+
+Returns the L<HTTP::Headers> object that will be used for the outgoing response.
+
+If necessary, you can manipulate this object in any way you see fit.
+
+=head2 Declined
+
+For use within a L<ASP4::RequestFilter> subclass, like this:
+
+  sub run {
+    # Permit requests only every other second:
+    if( time() % 2 ) {
+      return $Response->Declined;
+    }
+    else {
+      $Response->Write("Try again");
+      return $Response->End;
+    }
+  }
+
+=head2 IsClientConnected
+
+In a ModPerl environment, this can be used to determine whether the client has
+closed the connection (hit the "Stop" button or closed their browser).  Useful within
+a long-running loop.
+
+=head1 METHODS
+
+=head2 Write( $str )
+
+Adds C<$str> to the output buffer.
+
+=head2 Flush( )
+
+Causes the output buffer to be flushed to the client.
+
+=head2 End( )
+
+Aborts the current request.
+
+Example:
+
+  # Good:
+  return $Response->End;
+
+Simply calling...
+
+  # Bad!
+  $Response->End;
+
+...will not work as intended.
+
+=head2 AddHeader( $name => $value )
+
+Adds a new header to the outgoing HTTP headers collection.
+
+=head2 SetCookie( %args )
+
+Adds a new cookie to the response.
+
+C<%args> B<must> contain the following:
+
+=over 4
+
+=item * name
+
+A string - the name of the cookie.
+
+=item * value
+
+The value of the cookie.
+
+=back
+
+Other parameters are:
+
+=over 4
+
+=item * expires
+
+Can be in one of the following formats:
+
+=over 8
+
+=item * 30B<M>
+
+Minutes - how many minutes from "now" calculated as C<time() + (30 * 60)>
+
+Example:
+
+  expires => '30M'
+  expires => '-5M'  # 5 minutes ago
+
+=item * 2B<H>
+
+Hours - how many hours from "now" calculated as C<time() + (2 * 60 * 60)>
+
+Example:
+
+  expires => '2H'   # 2 hours
+  expires => '12H'  # 12 Hours
+
+=item * 7B<D>
+
+Days - how many days from "now" calculated as C<time() + (7 * 60 * 60 * 24)>
+
+Example:
+
+  expires => '7D'   # A week
+  expires => '30D'  # A month
+
+=back
+
+=item * path
+
+Defaults to "C</>" - you can restrict the "path" that the cookie will apply to.
+
+=item * domain
+
+Defaults to whatever you set your config->data_connections->session->cookie_domain to
+in your asp4-config.json.  Otherwise defaults to C<$ENV{HTTP_HOST}>.
+
+You can override the defaults by passing in a domain, but the browser may not accept
+other domains.  See L<http://www.ietf.org/rfc/rfc2109.txt> for details.
+
+=back
+
+=head2 Redirect( $url )
+
+Causes the following HTTP header to be sent:
+
+  Status: 301 Moved
+  Location: $url
+
+=head2 Include( $path [, \%args ] )
+
+Executes the ASP script at C<$path> and includes its output.  Additional C<\%args>
+may be passed along to the include.
+
+The passed-in args are accessible to the include like this:
+
+  <%
+    my ($self, $context, $args) = @_;
+    
+    # Args is a hashref:
+  %>
+
+=head2 TrapInclude( $path [, \%args ] )
+
+Executes the ASP script at C<$path> and returns its output.  Additional C<\%args>
+may be passed along to the include.
+
+The passed-in args are accessible to the include like this:
+
+  <%
+    my ($self, $context, $args) = @_;
+    
+    # Args is a hashref:
+  %>
+
+=cut
 

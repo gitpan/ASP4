@@ -70,6 +70,7 @@ t/etc/test_fixtures.yaml
 t/handlers/dev/simple.pm
 t/handlers/dev/speed.pm
 t/htdocs/404.asp
+t/htdocs/GlobalASA.pm
 t/htdocs/index.asp
 t/htdocs/masters/deep.asp
 t/htdocs/masters/global.asp
