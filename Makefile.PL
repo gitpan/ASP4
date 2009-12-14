@@ -20,7 +20,6 @@ requires    'Digest::MD5'             => 0;       # Session state.
 requires    'DBI'                     => 0;       # Session state.
 requires    'Storable'                => 2.18;    # Session state.
 requires    'HTTP::Date'              => 0;       # For Session timeouts.
-requires    'MIME::Types'             => 0;       # For MediaManager.
 requires    'Mail::Sendmail'          => 0;       # For sending email.
 requires    'CGI'                     => 3.43;    # For...cgi stuff...
 requires    'HTTP::Body'              => 0;

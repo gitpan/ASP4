@@ -1,6 +1,6 @@
 #!/bin/sh
 
 rm -rf ./nytprof ./nytprof.out
-PERL5OPT=-MDevel::NYTProf prove t -r
+PERL5OPT=-MDevel::NYTProf prove -Ilib t -r
 nytprofhtml
 
