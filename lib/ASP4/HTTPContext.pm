@@ -311,6 +311,21 @@ ASP4::HTTPContext - Provides access to the intrinsic objects for an HTTP request
 
 =head1 SYNOPSIS
 
+  use ASP4::HTTPContext;
+  
+  my $context = ASP4::HTTPContext->current;
+  
+  # Intrinsics:
+  my $request   = $context->request;
+  my $response  = $context->response;
+  my $session   = $context->session;
+  my $server    = $context->server;
+  my $config    = $context->config;
+  my $stash     = $context->stash;
+  
+  # Advanced:
+  my $cgi = $context->cgi;
+  my $r = $context->r;
 
 =head1 DESCRIPTION
 
@@ -355,6 +370,8 @@ Provided B<Just In Case> - returns the L<CGI> object for the HTTP request.
 =head2 r
 
 Provided B<Just In Case> - returns the L<Apache2::RequestRec> for the HTTP request.
+
+B<NOTE:> Under L<ASP4::API> (eg: in a unit test) C<$r> will be an instance of L<ASP4::Mock::RequestRec> instead.
 
 =cut
 

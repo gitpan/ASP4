@@ -18,6 +18,39 @@ sub new {
 }
 
 sub aborted { shift->{aborted} }
+sub client_socket { shift->{client_socket} }
 
 1;# return true:
+
+=pod
+
+=head1 NAME
+
+ASP4::Mock::Connection - Mimic the Apache2::Connection object
+
+=head1 SYNOPSIS
+
+  my $connection = $r->connection;
+  
+  if( $connection->aborted ) {
+    # The connection has been closed:
+  }
+  
+  my $socket = $connection->client_socket;
+
+=head1 DESCRIPTION
+
+Minimal mimic of the L<Apache2::Connection> object.
+
+=head1 PUBLIC PROPERTIES
+
+=head2 aborted( )
+
+Returns true or false, if the current connection has been aborted or not - respectively.
+
+=head2 client_socket( )
+
+Returns an instance of L<ASP4::Mock::ClientSocket>.
+
+=cut
 

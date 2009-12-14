@@ -99,6 +99,12 @@ ASP4::Server - Utility Methods
     Subject => 'Test Email',
     Message => "Hello There!",
   );
+  
+  # Avoid XSS:
+  <input type="text" name="foo" value="<%= $Server->HTMLEncode( $Form->{foo} ) %>" />
+  
+  # Proper URLs:
+  <a href="foo.asp?bar=<%= $Server->URLEncode($Form->{bar}) %>">Click</a>
 
 =head1 DESCRIPTION
 

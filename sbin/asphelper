@@ -11,6 +11,7 @@ my $args = { };
 $args->{domain}           = prompt("What is the website domain?", "www.example.com");
 $args->{cookie_domain}    = prompt("What is the cookie domain?", ".example.com");
 $args->{application_name} = prompt("Application name?", "MyApp");
+my $folder = lc($args->{application_name});
 
 $args->{mail_errors_to}   = prompt("Email errors to?", 'you@domain.com');
 $args->{mail_errors_from} = prompt("Email errors from?", 'root@localhost.com');
@@ -298,7 +299,7 @@ print $contact_asp <<"ASP";
   </style>
 </head>
 <body>
-<form method="post" action="/handlers/examples.contact">
+<form method="post" action="/handlers/$folder.examples.contact">
 
 <div>
   <span class="label required">First Name:</span>
@@ -342,19 +343,21 @@ print $contact_asp <<"ASP";
 ASP
 close($contact_asp);
 
-mkdir( "$args->{domain}/handlers/examples" );
-open my $handler_ofh, '>', "$args->{domain}/handlers/examples/contact.pm";
+mkdir( "$args->{domain}/handlers/$folder" );
+mkdir( "$args->{domain}/handlers/$folder/examples" );
+open my $handler_ofh, '>', "$args->{domain}/handlers/$folder/examples/contact.pm";
+print $handler_ofh <<"HANDLER";
+
+package $folder\::examples::contact;
+HANDLER
+
 print $handler_ofh <<'HANDLER';
-
-package examples::contact;
-
 use strict;
 use warnings 'all';
 use base 'ASP4::FormHandler';
 use vars __PACKAGE__->VARS;
 
 
-#==============================================================================
 sub run
 {
   my ($s, $context) = @_;
@@ -390,7 +393,6 @@ EMAIL
 }# end run()
 
 
-#==============================================================================
 sub validate
 {
   my ($s, $context) = @_;
@@ -447,7 +449,7 @@ close($handler_ofh);
 
 mkdir "$args->{domain}/t";
 open my $t_ofh, '>', "$args->{domain}/t/01.01-contact_form.t";
-print $t_ofh <<'TEST';
+my $test = <<'TEST';
 #!/usr/bin/perl -w
 
 use strict;
@@ -460,7 +462,7 @@ use Data::Properties::YAML;
 my $api; BEGIN { $api = ASP4::API->new }
 
 # Get our contact_form testing data:
-my %data = $api->data->contact_form->as_hash;
+my %data = $api->test_data->contact_form->as_hash;
 my $props = $api->properties->contact_form;
 
 # Will it load?:
@@ -474,7 +476,7 @@ my $props = $api->properties->contact_form;
 # first_name:
 {
   local $data{first_name} = '';
-  my $res = $api->ua->post("/handlers/examples.contact", [
+  my $res = $api->ua->post("/handlers/FOLDER.examples.contact", [
     %data
   ]);
   
@@ -490,7 +492,7 @@ my $props = $api->properties->contact_form;
 # last_name:
 {
   local $data{last_name} = '';
-  my $res = $api->ua->post("/handlers/examples.contact", [
+  my $res = $api->ua->post("/handlers/FOLDER.examples.contact", [
     %data,
   ]);
   
@@ -506,7 +508,7 @@ my $props = $api->properties->contact_form;
 # email - missing:
 {
   local $data{email} = '';
-  my $res = $api->ua->post("/handlers/examples.contact", [
+  my $res = $api->ua->post("/handlers/FOLDER.examples.contact", [
     %data,
   ]);
   
@@ -522,7 +524,7 @@ my $props = $api->properties->contact_form;
 # email - invalid:
 {
   local $data{email} = 'invalid-email';
-  my $res = $api->ua->post("/handlers/examples.contact", [
+  my $res = $api->ua->post("/handlers/FOLDER.examples.contact", [
     %data,
   ]);
   
@@ -538,7 +540,7 @@ my $props = $api->properties->contact_form;
 # message:
 {
   local $data{message} = '';
-  my $res = $api->ua->post("/handlers/examples.contact", [
+  my $res = $api->ua->post("/handlers/FOLDER.examples.contact", [
     %data,
   ]);
   
@@ -554,7 +556,7 @@ my $props = $api->properties->contact_form;
 # And make sure everything works when we submit the form nicely:
 {
   $api->ua->get("/examples/contact.asp");
-  my $res = $api->ua->post("/handlers/examples.contact", [
+  my $res = $api->ua->post("/handlers/FOLDER.examples.contact", [
     %data,
   ]);
   
@@ -564,11 +566,12 @@ my $props = $api->properties->contact_form;
   );
 }
 
-
 TEST
+$test =~ s/FOLDER/$folder/sg;
+print $t_ofh $test;
 close($t_ofh);
 
-#==============================================================================
+
 sub prompt
 {
   my ($q, $default) = @_;
@@ -596,4 +599,28 @@ sub prompt
   
   return $answer;
 }# end prompt()
+
+=pod
+
+=head1 NAME
+
+asphelper - Generate an ASP4 skeleton web application
+
+=head1 USAGE
+
+  asphelper
+
+Upon execution, C<asphelper> will ask you several questions about the web application
+it should create.
+
+=head1 DESCRIPTION
+
+The C<asphelper> program offers a way to get up-and-running quickly with a new ASP4 web application.
+
+After successfully answering its questions, C<asphelper> will generate a skeleton web application
+including config files, full directory structure, unit test and a working contact form example.
+
+Use the resulting application as a starting-point for your own development.
+
+=cut
 
