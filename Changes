@@ -1,5 +1,10 @@
 
-2009-12-13    v0.001_01
+2009-12-14    v0.001_03 .. v0.001_05
+  - Just getting the Makefile.PL prerequisites correct.
 
+2009-12-13    v0.001_02
+  - Added POD.
+
+2009-12-13    v0.001_01
   * Initial release
 

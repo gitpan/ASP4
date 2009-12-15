@@ -14,6 +14,7 @@ test_requires 'DBD::SQLite'         => 0;
 test_requires 'Time::HiRes'         => 0;
 test_requires 'HTML::Form'          => 0;
 
+requires    'common::sense'           => 0;
 requires    'Data::Properties::YAML'  => 0;
 requires    'Cwd'                     => 0;
 requires    'Digest::MD5'             => 0;       # Session state.

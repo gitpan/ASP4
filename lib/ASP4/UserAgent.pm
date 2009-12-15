@@ -191,6 +191,7 @@ sub _setup_cgi
     $req->referer('');
   }# end if()
   
+  no warnings 'uninitialized';
   (my ($uri_no_args), $ENV{QUERY_STRING} ) = split /\?/, $req->uri;
   $ENV{SERVER_NAME} = $ENV{HTTP_HOST} = 'localhost';
   
