@@ -88,8 +88,9 @@ sub check_reload
     my $info = ASP4::PageLoader->discover( script_name => $uri );
     return unless -f $info->{saved_to};
     $FileTimes{ $info->{filename} } ||= 0;
-    if( stat($info->{filename})->mtime > ( $FileTimes{ $info->{filename} } || stat($info->{saved_to})->mtime ) )
+    if( stat($info->{filename})->mtime > $FileTimes{ $info->{filename} } )
     {
+      $FileTimes{ $info->{filename} } = stat($info->{filename})->mtime;
       $s->_forget_package(
         $info->{compiled_as}, $info->{package}
       );
