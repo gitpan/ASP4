@@ -21,6 +21,7 @@ sub new
     http_cookie => '',
     cookies     => { },
     referer     => '',
+    env         => { %ENV },
   }, shift;
 }# end new()
 
@@ -36,6 +37,7 @@ sub get
   undef($ASP4::HTTPContext::_instance);
   my $req = GET $uri;
   %ENV = (
+    %{ $s->{env} },
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'GET',
     CONTENT_TYPE    => 'application/x-www-form-urlencoded',
@@ -58,6 +60,7 @@ sub post
   $args ||= [ ];
   my $req = POST $uri, $args;
   %ENV = (
+    %{ $s->{env} },
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'POST',
     CONTENT_TYPE    => 'application/x-www-form-urlencoded',
@@ -80,6 +83,7 @@ sub upload
   $args ||= [ ];
   my $req = POST $uri, Content_Type => 'form-data', Content => $args;
   %ENV = (
+    %{ $s->{env} },
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'POST',
     CONTENT_TYPE    => 'multipart/form-data',
@@ -103,6 +107,7 @@ sub submit_form
   my $temp_referrer = $ENV{HTTP_REFERER};
   my $req = $form->click;
   %ENV = (
+    %{ $s->{env} },
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => uc( $req->method ),
     CONTENT_TYPE    => $form->enctype ? $form->enctype : 'application/x-www-form-urlencoded',

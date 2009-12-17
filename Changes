@@ -1,4 +1,7 @@
 
+2009-12-17    v1.002
+  - %ENV is no longer clobbered by ASP4::UserAgent.
+
 2009-12-16    v1.001
   - Fixed a bug that prevented ASP4 for reliably detecting when an ASP script
     had been updated.
