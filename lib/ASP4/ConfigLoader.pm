@@ -17,7 +17,11 @@ sub load
   my ($s) = @_;
   
   my $path = ASP4::ConfigFinder->config_path;
-  return $Configs->{$path} if $Configs->{$path};
+  my $file_time = (stat($path))[7];
+  if( exists($Configs->{$path}) && ( $file_time <= $Configs->{$path}->{timestamp} ) )
+  {
+    return $Configs->{$path}->{data};
+  }# end if()
   
   open my $ifh, '<', $path
     or die "Cannot open '$path' for reading: $!";
@@ -26,7 +30,11 @@ sub load
   close($ifh);
   
   (my $where = $path) =~ s/\/conf\/[^\/]+$//;
-  return $Configs->{$path} = ASP4::ConfigParser->new->parse( $doc, $where );
+  $Configs->{$path} = {
+    data      => ASP4::ConfigParser->new->parse( $doc, $where ),
+    timestamp => $file_time,
+  };
+  return $Configs->{$path}->{data};
 }# end parse()
 
 1;# return true:

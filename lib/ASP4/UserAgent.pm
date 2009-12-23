@@ -36,8 +36,10 @@ sub get
   chdir( $s->{cwd} );
   undef($ASP4::HTTPContext::_instance);
   my $req = GET $uri;
+  my $referer = $ENV{HTTP_REFERER};
   %ENV = (
     %{ $s->{env} },
+    HTTP_REFERER    => $referer || '',
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'GET',
     CONTENT_TYPE    => 'application/x-www-form-urlencoded',
@@ -59,8 +61,10 @@ sub post
   undef($ASP4::HTTPContext::_instance);
   $args ||= [ ];
   my $req = POST $uri, $args;
+  my $referer = $ENV{HTTP_REFERER};
   %ENV = (
     %{ $s->{env} },
+    HTTP_REFERER    => $referer || '',
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'POST',
     CONTENT_TYPE    => 'application/x-www-form-urlencoded',
@@ -82,8 +86,10 @@ sub upload
   undef($ASP4::HTTPContext::_instance);
   $args ||= [ ];
   my $req = POST $uri, Content_Type => 'form-data', Content => $args;
+  my $referer = $ENV{HTTP_REFERER};
   %ENV = (
     %{ $s->{env} },
+    HTTP_REFERER    => $referer || '',
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'POST',
     CONTENT_TYPE    => 'multipart/form-data',
@@ -106,8 +112,10 @@ sub submit_form
   
   my $temp_referrer = $ENV{HTTP_REFERER};
   my $req = $form->click;
+  my $referer = $ENV{HTTP_REFERER};
   %ENV = (
     %{ $s->{env} },
+    HTTP_REFERER    => $referer || '',
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => uc( $req->method ),
     CONTENT_TYPE    => $form->enctype ? $form->enctype : 'application/x-www-form-urlencoded',

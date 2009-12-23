@@ -1,4 +1,11 @@
 
+2009-12-22    v1.003
+  - $ENV{HTTP_REFERER} can be set and preserved properly.
+  - conf/asp4-config.json will be reloaded if it is modified.  This means that
+    the server does not have to be restarted for changes to asp4-config.json 
+    to take effect.
+  - Added ASP4::TransHandler
+
 2009-12-17    v1.002
   - %ENV is no longer clobbered by ASP4::UserAgent.
 

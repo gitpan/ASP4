@@ -45,6 +45,7 @@ lib/ASP4/SessionStateManager.pm
 lib/ASP4/SessionStateManager/NonPersisted.pm
 lib/ASP4/SimpleCGI.pm
 lib/ASP4/Test/Fixtures.pm
+lib/ASP4/TransHandler.pm
 lib/ASP4/UserAgent.pm
 Makefile.PL
 MANIFEST			This list of files
