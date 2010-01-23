@@ -111,7 +111,7 @@ sub did_end {
 
 sub rprint {
   my ($s,$str) = @_;
-  $s->buffer->add( $str )
+  $s->buffer->add( $str );
 }
 
 sub rflush {

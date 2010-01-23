@@ -44,6 +44,7 @@ sub get
     REQUEST_METHOD  => 'GET',
     CONTENT_TYPE    => 'application/x-www-form-urlencoded',
     HTTP_COOKIE     => $s->http_cookie,
+    REQUEST_URI     => $uri,
   );
   my $cgi = $s->_setup_cgi( $req );
   my ($uri_no_args, $querystring) = split /\?/, $uri;
@@ -69,6 +70,7 @@ sub post
     REQUEST_METHOD  => 'POST',
     CONTENT_TYPE    => 'application/x-www-form-urlencoded',
     HTTP_COOKIE     => $s->http_cookie,
+    REQUEST_URI     => $uri,
   );
   my $cgi = $s->_setup_cgi( $req );
   my ($uri_no_args, $querystring) = split /\?/, $uri;
@@ -94,6 +96,7 @@ sub upload
     REQUEST_METHOD  => 'POST',
     CONTENT_TYPE    => 'multipart/form-data',
     HTTP_COOKIE     => $s->http_cookie,
+    REQUEST_URI     => $uri,
   );
   my $cgi = $s->_setup_cgi( $req );
   my ($uri_no_args, $querystring) = split /\?/, $uri;
@@ -120,6 +123,7 @@ sub submit_form
     REQUEST_METHOD  => uc( $req->method ),
     CONTENT_TYPE    => $form->enctype ? $form->enctype : 'application/x-www-form-urlencoded',
     HTTP_COOKIE     => $s->http_cookie,
+    REQUEST_URI     => $form->action,
   );
   my $cgi = $s->_setup_cgi( $req );
   my ($uri_no_args, $querystring) = split /\?/, $req->uri;
@@ -167,9 +171,9 @@ sub _setup_response
   
   foreach my $header ( $s->context->response->Headers, $s->context->r->err_headers_out )
   {
-    while( my ($k,$v) = each(%$header) )
+    if( my ($k,$v) = each(%$header) )
     {
-      $response->header( $k => $v );
+      $response->header( lc($k) => $v );
       if( lc($k) eq 'set-cookie' )
       {
         my ($data) = split /;/, $v;
@@ -178,13 +182,6 @@ sub _setup_response
       }# end if()
     }# end while()
   }# end foreach()
-  
-  if( $s->context->session && $s->context->session->{SessionID} )
-  {
-    $s->add_cookie(
-      $s->config->data_connections->session->cookie_name => $s->context->session->{SessionID}
-    );
-  }# end if()
   
   return $response;
 }# end _setup_response()

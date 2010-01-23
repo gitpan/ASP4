@@ -145,8 +145,7 @@ sub SetCookie
 sub AddHeader
 {
   my ($s, $name, $value) = @_;
-  
-  $s->context->headers_out->header( $name => $value );
+  $s->context->headers_out->push_header( $name => $value );
 }# end AddHeader()
 
 
