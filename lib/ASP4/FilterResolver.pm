@@ -27,7 +27,7 @@ sub resolve_request_filters
     grep {
       if( my $pattern = $_->uri_match )
       {
-        $uri =~ m/$pattern/
+        $uri =~ m{^$pattern}
       }
       else
       {

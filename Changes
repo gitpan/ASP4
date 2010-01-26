@@ -1,5 +1,9 @@
 
 
+2010-01-25    v1.005
+  - Request Filters were not always matching properly
+    because of a regexp bug in ASP4::FilterResolver.
+
 2010-01-22    v1.004
   - $ENV{REQUEST_URI} was not getting set properly - this is now fixed.
 
