@@ -1,5 +1,9 @@
 
 
+2010-01-27    v1.006
+  - Sometimes changes in MasterPages are not immediately reflected in child pages.
+    This release attempts to correct this bug.
+
 2010-01-25    v1.005
   - Request Filters were not always matching properly
     because of a regexp bug in ASP4::FilterResolver.

@@ -5,6 +5,7 @@ use strict;
 use warnings 'all';
 use ASP4::PageParser;
 use ASP4::ConfigLoader;
+use ASP4::HandlerResolver;
 use File::stat;
 my %FileTimes = ( );
 
@@ -51,6 +52,10 @@ sub load
   }# end if()
 
   my $config = ASP4::ConfigLoader->load();
+  
+  # Deal with changes all the way up the master/child chain:
+  ASP4::HandlerResolver->_forget_package( $info->{compiled_as}, $info->{package} );
+  
   $config->load_class( $info->{package} );
   $FileTimes{ $info->{filename} } ||= stat($info->{filename})->mtime;
   return $info->{package}->new();
