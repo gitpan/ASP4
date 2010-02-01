@@ -53,6 +53,19 @@ sub SaveAs
 {
   my ($s, $path) = @_;
   
+  # Create the file path if it doesn't yet exist:
+  my $folder = "";
+  my @parts = grep { $_ } split /\//, $path;
+  pop(@parts);
+  for( @parts )
+  {
+    $folder .= "/$_";
+    unless( -d $folder )
+    {
+      mkdir( $folder, 0777 );
+    }# end unless()
+  }# end for()
+  
   open my $ofh, '>', $path
     or confess "Cannot open '$path' for writing: $!";
   my $ifh = $s->FileHandle;
