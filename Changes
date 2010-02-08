@@ -1,6 +1,14 @@
 
 
-201-0-2-07    v1.008
+2010-02-08    v1.009
+  ! Upgrade Recommended !
+  - ASP4::ModPerl sets $ENV{DOCUMENT_ROOT} = $r->document_root before doing 
+    anything else.
+  - The scaffold website output by 'asphelper' had some minor bugs:
+      * email was sometimes referred to as email_address
+      * The error message for the 'message' field was displaying the wrong error.
+
+2010-02-07    v1.008
   - Multi-value form parameters (eg 3 checkboxes with the same name) will now
     *correctly* appear as an arrayref in $Form, instead of 3 values joined with
     a null byte.

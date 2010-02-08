@@ -315,14 +315,14 @@ print $contact_asp <<"ASP";
 
 <div>
   <span class="label required">Email Address:</span>
-  <input type="text" name="email_address" value="<%= \$Server->HTMLEncode( \$Form->{email_address} ) %>" />
-  <% \$err->('email_address'); %>
+  <input type="text" name="email" value="<%= \$Server->HTMLEncode( \$Form->{email} ) %>" />
+  <% \$err->('email'); %>
 </div>
 
 <div>
   <span class="label required">Your Message:</span>
   <textarea rows="6" cols="40" name="message"><%= \$Server->HTMLEncode( \$Form->{message} ) %></textarea>
-  <% \$err->('email_address'); %>
+  <% \$err->('message'); %>
 </div>
 
 <div>
