@@ -9,10 +9,20 @@ sub new
 {
   my ($class, %args) = @_;
   
-  return bless {
+  my $cgi = $class->context->cgi;
+  my $s = bless {
     %args,
-    form  => scalar( $class->context->cgi->Vars ),
+    form  => {
+      map {
+        # CGI->Vars joins multi-value params with a null byte.  Which sucks.
+        # To avoid that behavior, we do this instead:
+        my @val = $cgi->param($_);
+        $_ => scalar(@val) > 1 ? \@val : shift(@val)
+      } $cgi->param
+    },
   }, $class;
+  
+  return $s;
 }# end new()
 
 

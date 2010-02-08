@@ -105,7 +105,7 @@ sub param
   {
     if( ref($s->{params}->{$key}) )
     {
-      return wantarray ? @{ $s->{params}->{$key} } : $s->{params}->{$key};
+      return wantarray ? ref($s->{params}->{$key}) eq 'ARRAY' ? @{ $s->{params}->{$key} } : $s->{params}->{$key} : $s->{params}->{$key};
     }
     else
     {

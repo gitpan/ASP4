@@ -1,5 +1,10 @@
 
 
+201-0-2-07    v1.008
+  - Multi-value form parameters (eg 3 checkboxes with the same name) will now
+    *correctly* appear as an arrayref in $Form, instead of 3 values joined with
+    a null byte.
+
 2010-01-31    v1.007
   - $FileUpload->SaveAs("/path/to/file.txt") will now create "/path" and "/path/to"
     before writing "/path/to/file.txt".
