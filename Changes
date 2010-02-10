@@ -1,5 +1,12 @@
 
 
+2010-02-10    v1.010
+  ! UPGRADE *SERIOUSLY* RECOMMENDED !
+  - In an environment with multiple VirtualHosts running ASP4 web applications,
+    ASP4::HandlerResolver's %HandlerCache and %FileTimes hashes were shared between
+    all VirtualHosts.  This means that if you had 2 web apps (Foo and Bar) then
+    "/index.asp" on "Foo" might get handled by "Bar::_index_asp" or vice versa.
+
 2010-02-08    v1.009
   ! Upgrade Recommended !
   - ASP4::ModPerl sets $ENV{DOCUMENT_ROOT} = $r->document_root before doing 

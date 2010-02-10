@@ -39,6 +39,7 @@ sub setup_request
 {
   my ($s, $r, $cgi) = @_;
   
+  $ENV{DOCUMENT_ROOT} = $r->document_root;
   $s->{r} = $r;
   $s->{cgi} = $cgi;
   

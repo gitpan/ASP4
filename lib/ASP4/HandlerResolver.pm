@@ -26,7 +26,7 @@ sub resolve_request_handler
   
   ($uri) = split /\?/, $uri;
   $s->check_reload( $uri );
-  return $HandlerCache{$uri} if $HandlerCache{$uri};
+  return $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} if $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"};
   
   if( $uri =~ m/^\/handlers\// )
   {
@@ -38,7 +38,7 @@ sub resolve_request_handler
     if( -f $filepath )
     {
       $s->context->config->load_class( $handler );
-      return $HandlerCache{$uri} = $handler;
+      return $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} = $handler;
     }
     else
     {
@@ -51,7 +51,7 @@ sub resolve_request_handler
     if( -f $info->{filename} )
     {
       my $page = ASP4::PageLoader->load( script_name => $uri );
-      return $HandlerCache{$uri} = $page->package;
+      return $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} = $page->package;
     }
     else
     {
@@ -76,25 +76,25 @@ sub check_reload
     
     if( stat($filepath)->mtime > ($FileTimes{ $filepath } || 0) )
     {
-      $FileTimes{ $filepath } = stat($filepath)->mtime;
+      $FileTimes{ "$ENV{DOCUMENT_ROOT}:$filepath" } = stat($filepath)->mtime;
       $s->_forget_package(
         $inc_entry, $handler
       );
-      delete( $HandlerCache{$uri} );
+      delete( $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} );
     }# end if()
   }
   else
   {
     my $info = ASP4::PageLoader->discover( script_name => $uri );
     return unless -f $info->{saved_to};
-    $FileTimes{ $info->{filename} } ||= 0;
-    if( stat($info->{filename})->mtime > $FileTimes{ $info->{filename} } )
+    $FileTimes{ "$ENV{DOCUMENT_ROOT}:$info->{filename}" } ||= 0;
+    if( stat($info->{filename})->mtime > $FileTimes{ "$ENV{DOCUMENT_ROOT}:$info->{filename}" } )
     {
-      $FileTimes{ $info->{filename} } = stat($info->{filename})->mtime;
+      $FileTimes{ "$ENV{DOCUMENT_ROOT}:$info->{filename}" } = stat($info->{filename})->mtime;
       $s->_forget_package(
         $info->{compiled_as}, $info->{package}
       );
-      delete( $HandlerCache{$uri} );
+      delete( $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} );
     }# end if()
   }# end if()
 }# end check_reload()
