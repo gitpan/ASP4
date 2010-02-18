@@ -1,5 +1,8 @@
 
 
+2010-02-18    v1.012
+  - MANIFEST was missing a few files that caused tests to fail.
+
 2010-02-17    v1.011
   ! Upgrade Recommended !
   - $Response->SetCookie and $Response->ContentType were not functioning properly.
