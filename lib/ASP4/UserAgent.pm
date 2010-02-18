@@ -177,9 +177,22 @@ sub _setup_response
       $response->header( lc($k) => $v );
       if( lc($k) eq 'set-cookie' )
       {
-        my ($data) = split /;/, $v;
-        my ($name,$val) = map { ASP4::SimpleCGI->unescape( $_ ) } split /\=/, $data;
-        $s->add_cookie( $name => $val );
+        my @cookies = ( );
+        if( ref($v) )
+        {
+          @cookies = @$v;
+        }
+        else
+        {
+          @cookies = ( $v );
+        }# end if()
+        
+        foreach $v ( @cookies )
+        {
+          my ($data) = split /;/, $v;
+          my ($name,$val) = map { ASP4::SimpleCGI->unescape( $_ ) } split /\=/, $data;
+          $s->add_cookie( $name => $val );
+        }# end foreach()
       }# end if()
     }# end while()
   }# end foreach()

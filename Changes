@@ -1,5 +1,10 @@
 
 
+2010-02-17    v1.011
+  ! Upgrade Recommended !
+  - $Response->SetCookie and $Response->ContentType were not functioning properly.
+  - Added new method $Response->SetHeader.
+
 2010-02-10    v1.010
   ! UPGRADE *SERIOUSLY* RECOMMENDED !
   - In an environment with multiple VirtualHosts running ASP4 web applications,

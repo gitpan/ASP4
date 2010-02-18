@@ -34,7 +34,7 @@ sub ContentType
   {
     my $type = shift;
     $s->{_content_type} = $type;
-    $s->context->r->content_type( $type );
+    $s->SetHeader('content-type' => $type);
   }
   else
   {
@@ -50,7 +50,7 @@ sub Expires
   {
     $s->{_expires} = shift;
     $s->{_expires_absolute} = time2str( time() + ( $s->{_expires} * 60 ) );
-    $s->AddHeader( expires  => $s->ExpiresAbsolute );
+    $s->SetHeader( expires  => $s->ExpiresAbsolute );
   }# end if()
   
   return $s->{_expires};
@@ -145,7 +145,16 @@ sub SetCookie
 sub AddHeader
 {
   my ($s, $name, $value) = @_;
+  
   $s->context->headers_out->push_header( $name => $value );
+}# end AddHeader()
+
+
+sub SetHeader
+{
+  my ($s, $name, $value) = @_;
+  
+  $s->context->headers_out->header( $name => $value );
 }# end AddHeader()
 
 
@@ -243,6 +252,8 @@ ASP4::Response - Interface to the outgoing HTTP response
   $Response->Write("Hello, World!");
   
   $Response->AddHeader( 'x-awesomeness' => '100%' );
+  
+  $Response->SetHeader( 'x-velocity'  => '100MPH' );
   
   $Response->SetCookie(
     # Required parameters:
@@ -349,7 +360,11 @@ Simply calling...
 
 =head2 AddHeader( $name => $value )
 
-Adds a new header to the outgoing HTTP headers collection.
+Appends C<$value> to the header C<$name>.
+
+=head2 SetHeader( $name => $value )
+
+Sets (and replaces) the header C<$name> to the value of C<$value>.
 
 =head2 SetCookie( %args )
 
