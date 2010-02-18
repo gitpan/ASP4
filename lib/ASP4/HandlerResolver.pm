@@ -74,7 +74,7 @@ sub check_reload
     (my $inc_entry = "$handler.pm") =~ s/::/\//g;
     return unless -f $filepath;
     
-    if( stat($filepath)->mtime > ($FileTimes{ $filepath } || 0) )
+    if( stat($filepath)->mtime > ($FileTimes{ "$ENV{DOCUMENT_ROOT}:$filepath" } || 0) )
     {
       $FileTimes{ "$ENV{DOCUMENT_ROOT}:$filepath" } = stat($filepath)->mtime;
       $s->_forget_package(

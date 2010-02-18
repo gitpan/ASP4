@@ -1,5 +1,9 @@
 
 
+2010-02-18    v1.013
+  - ASP4::HandlerResolver was not properly remembering timestamps on handler files.
+    This resulted in unnecessary reloads of handlers that had not been changed.
+
 2010-02-18    v1.012
   - MANIFEST was missing a few files that caused tests to fail.
 
