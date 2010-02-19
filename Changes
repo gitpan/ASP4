@@ -1,4 +1,7 @@
 
+2010-02-18    v1.014
+  - $Response->ContentType now functions correctly.
+  - Upgrade mandatory!
 
 2010-02-18    v1.013
   - ASP4::HandlerResolver was not properly remembering timestamps on handler files.

@@ -75,7 +75,13 @@ sub buffer          { shift->{buffer} } # Not documented:
 
 # Public methods:
 sub print { my ($s,$str) = @_; $s->{buffer} .= $str; }
-sub content_type { my $s = shift; @_ ? $s->{content_type} = +shift : $s->{content_type} }
+#sub content_type { my $s = shift; @_ ? $s->{content_type} = +shift : $s->{content_type} }
+sub content_type
+{
+  my ($s, $type) = @_;
+  return $s->headers_out->{'content-type'} unless $type;
+  $s->headers_out->{'content-type'} = $type;
+}# end content_type()
 
 sub rflush { }
 
