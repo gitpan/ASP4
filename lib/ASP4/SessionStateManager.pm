@@ -59,11 +59,15 @@ sub write_session_cookie
   my $context = ASP4::HTTPContext->current;
   my $config = $context->config->data_connections->session;
   my $expires = time2str( time() + ( $config->session_timeout * 60 ) );
-  my $domain = $config->cookie_domain || $ENV{HTTP_HOST};
+  my $domain = "";
+  unless( $config->cookie_domain eq '*' )
+  {
+    $domain = "domain=" . ( $config->cookie_domain || $ENV{HTTP_HOST} ) . ";";
+  }# end unless()
   my $name = $config->cookie_name;
   
   my @cookie = (
-    'Set-Cookie' => "$name=$s->{SessionID}; path=/; domain=$domain; expires=$expires;"
+    'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain expires=$expires;"
   );
   $context->headers_out->push_header( @cookie );
   @cookie;

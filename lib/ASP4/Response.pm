@@ -112,7 +112,10 @@ sub SetCookie
   $args{path}   ||= '/';
   my @parts = ( );
   push @parts, $s->context->server->URLEncode($args{name}) . '=' . $s->context->server->URLEncode($args{value});
-  push @parts, 'domain=' . $s->context->server->URLEncode($args{domain});
+  unless( $args{domain} eq '*' )
+  {
+    push @parts, 'domain=' . $s->context->server->URLEncode($args{domain});
+  }# end unless()
   push @parts, 'path=' . $args{path};
   if( $args{expires} )
   {

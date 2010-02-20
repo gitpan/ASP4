@@ -1,4 +1,10 @@
 
+2010-02-19    v1.015
+  - Hostnames like http://myapplication/ were not setting session cookies properly.
+  - $Config->data_connections->session->cookie_domain should set to "*" in these cases.
+  - $Response->SetCookie accepts the "*" value for domain also.
+  - The result is that no "domain=xyz" attribute is given to these cookies.
+
 2010-02-18    v1.014
   - $Response->ContentType now functions correctly.
   - Upgrade mandatory!
