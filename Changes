@@ -1,5 +1,11 @@
 
-2010-03-01
+2010-03-01    v1.018
+  - Updated asphelper script so that the POD on CPAN is not contaminated with POD
+    from within one of the modules that asphelper generates.
+  - Now asphelper will not create a Class::DBI::Lite model class unless 
+    Class::DBI::Lite is installed.
+
+2010-03-01    v1.017
   - Updated asphelper script to only accept options on the command-line, like "normal" scripts.
 
 2010-02-28    v1.016
