@@ -1,4 +1,8 @@
 
+2010-02-28    v1.016
+  - A vestigial "use encoding 'utf8'" was removed from ASP4::Server.
+  - It was causing Apache to segfault on ubuntu 9.10.
+
 2010-02-19    v1.015
   - Hostnames like http://myapplication/ were not setting session cookies properly.
   - $Config->data_connections->session->cookie_domain should set to "*" in these cases.

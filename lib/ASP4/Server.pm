@@ -4,7 +4,6 @@ package ASP4::Server;
 use strict;
 use warnings 'all';
 use ASP4::HTTPContext;
-use encoding 'utf8';
 use Mail::Sendmail;
 
 sub new
