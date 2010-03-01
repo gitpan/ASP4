@@ -1,4 +1,7 @@
 
+2010-03-01
+  - Updated asphelper script to only accept options on the command-line, like "normal" scripts.
+
 2010-02-28    v1.016
   - A vestigial "use encoding 'utf8'" was removed from ASP4::Server.
   - It was causing Apache to segfault on ubuntu 9.10.
