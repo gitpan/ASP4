@@ -84,6 +84,7 @@ unless( -f "$domain/conf/asp4-config.json" )
     or die "Cannot open '$domain/conf/asp4-config.json' for writing: $!";
   my $json = generic_config();
   $json =~ s/\%CWD\%/$cwd/igs;
+  $json =~ s/\%domain\%/$domain/igs;
   $json =~ s/\%appName\%/$appName/igs;
   $json =~ s/\%dbName\%/$dbName/igs;
   $json =~ s/\%dbHost\%/$dbHost/igs;
@@ -102,6 +103,7 @@ unless( -f "$domain/conf/httpd.conf" )
     or die "Cannot open '$domain/conf/httpd.conf' for writing: $!";
   my $conf = generic_httpconf();
   $conf =~ s/\%CWD\%/$cwd/igs;
+  $conf =~ s/\%domain\%/$domain/igs;
   $conf =~ s/\%appName\%/$appName/igs;
   $conf =~ s/\%dbName\%/$dbName/igs;
   $conf =~ s/\%dbHost\%/$dbHost/igs;
@@ -125,7 +127,7 @@ unless( -f "$domain/htdocs/index.asp" )
 <body>
 <h1>ASP4 Test Page</h1>
 <p>
-  The date and time is <%= localtime() %>.
+  The date and time is <%= scalar(localtime()) %>.
 </p>
 <p>
   You have visited this page <%= $Session->{count}++ %> time(s) recently.
@@ -171,7 +173,7 @@ CODE
 my $CDBIL_Version = 0;
 eval {
   require Class::DBI::Lite;
-  $CDBIL_Version = $Class::DBI::Lite::Version;
+  $CDBIL_Version = $Class::DBI::Lite::VERSION = $Class::DBI::Lite::VERSION;
 };
 if( $dbName && $CDBIL_Version )
 {

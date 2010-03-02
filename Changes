@@ -1,4 +1,7 @@
 
+2010-03-02    v1.019
+  - Fixed a bug in asphelper that caused some problems creating a skeleton website.
+
 2010-03-01    v1.018
   - Updated asphelper script so that the POD on CPAN is not contaminated with POD
     from within one of the modules that asphelper generates.
