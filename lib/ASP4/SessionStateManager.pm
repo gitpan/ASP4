@@ -58,7 +58,6 @@ sub write_session_cookie
   
   my $context = ASP4::HTTPContext->current;
   my $config = $context->config->data_connections->session;
-  my $expires = time2str( time() + ( $config->session_timeout * 60 ) );
   my $domain = "";
   unless( $config->cookie_domain eq '*' )
   {
@@ -66,8 +65,19 @@ sub write_session_cookie
   }# end unless()
   my $name = $config->cookie_name;
   
+  my $expires = "";
+  if( $config->session_timeout eq '*' )
+  {
+    $expires = "";
+  }
+  else
+  {
+    my $expire_time = time2str( time() + ( $config->session_timeout * 60 ) );
+    $expires = "expires=$expire_time;";
+  }# end if()
+  
   my @cookie = (
-    'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain expires=$expires;"
+    'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain $expires"
   );
   $context->headers_out->push_header( @cookie );
   @cookie;
@@ -78,19 +88,35 @@ sub verify_session_id
 {
   my ($s, $id, $timeout ) = @_;
   
-  my $range_start = time() - ( $timeout * 60 );
-  local $s->db_Main->{AutoCommit} = 1;
-  my $sth = $s->db_Main->prepare_cached(<<"");
-    SELECT *
-    FROM asp_sessions
-    WHERE session_id = ?
-    AND modified_on BETWEEN ? AND ?
+  my $is_active;
+  if( $timeout eq '*' )
+  {
+    local $s->db_Main->{AutoCommit} = 1;
+    my $sth = $s->db_Main->prepare_cached(<<"");
+      SELECT *
+      FROM asp_sessions
+      WHERE session_id = ?
 
-  $sth->execute( $id, time2iso($range_start), time2iso() );
-  my ($active) = $sth->fetchrow();
-  $sth->finish();
+    $sth->execute( $id );
+    ($is_active) = $sth->fetchrow();
+    $sth->finish();
+  }
+  else
+  {
+    my $range_start = time() - ( $timeout * 60 );
+    local $s->db_Main->{AutoCommit} = 1;
+    my $sth = $s->db_Main->prepare_cached(<<"");
+      SELECT *
+      FROM asp_sessions
+      WHERE session_id = ?
+      AND modified_on BETWEEN ? AND ?
 
-  return $active;
+    $sth->execute( $id, time2iso($range_start), time2iso() );
+    ($is_active) = $sth->fetchrow();
+    $sth->finish();
+  }# end if()
+
+  return $is_active;
 }# end verify_session_id()
 
 
@@ -144,18 +170,36 @@ sub retrieve
   $data = thaw($data) || { SessionID => $id };
   $sth->finish();
 
+  my $max_timeout = $s->context->config->data_connections->session->session_timeout;
   my $seconds_since_last_modified = time() - str2time($modified_on);
-  my $timeout_seconds = $s->context->config->data_connections->session->session_timeout * 60;
-  if( $seconds_since_last_modified >= 1 && $seconds_since_last_modified < $timeout_seconds )
+  if( $max_timeout eq '*' )
   {
-    local $s->db_Main->{AutoCommit} = 1;
-    my $sth = $s->db_Main->prepare_cached(<<"");
-    UPDATE asp_sessions SET
-      modified_on = ?
-    WHERE session_id = ?
+    if( $seconds_since_last_modified >= 1 )
+    {
+      local $s->db_Main->{AutoCommit} = 1;
+      my $sth = $s->db_Main->prepare_cached(<<"");
+      UPDATE asp_sessions SET
+        modified_on = ?
+      WHERE session_id = ?
 
-    $sth->execute( time2iso(), $id );
-    $sth->finish();
+      $sth->execute( time2iso(), $id );
+      $sth->finish();
+    }# end if()
+  }
+  else
+  {
+    my $timeout_seconds = $max_timeout * 60;
+    if( $seconds_since_last_modified >= 1 && $seconds_since_last_modified < $timeout_seconds )
+    {
+      local $s->db_Main->{AutoCommit} = 1;
+      my $sth = $s->db_Main->prepare_cached(<<"");
+      UPDATE asp_sessions SET
+        modified_on = ?
+      WHERE session_id = ?
+
+      $sth->execute( time2iso(), $id );
+      $sth->finish();
+    }# end if()
   }# end if()
   
   undef(%$s);

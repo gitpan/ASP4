@@ -35,10 +35,6 @@
     "handler_runner":   "ASP4::HandlerRunner",
     "filter_resolver":  "ASP4::FilterResolver",
     "request_filters": [
-      {
-        "uri_match":  "^/.*",
-        "class":      "My::Filter"
-      }
     ],
     "disable_persistence": [
       {
@@ -64,7 +60,7 @@
       "manager":          "ASP4::SessionStateManager",
       "cookie_name":      "session-id",
       "cookie_domain":    ".mysite.com",
-      "session_timeout":  30,
+      "session_timeout":  "*",
       "dsn":              "DBI:SQLite:dbname=/tmp/db_asp4",
       "username":         "",
       "password":         ""

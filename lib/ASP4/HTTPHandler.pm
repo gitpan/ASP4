@@ -84,8 +84,9 @@ sub _parents
   my @classes = ( $class );
   no strict 'refs';
   my $pkg = __PACKAGE__;
+  my %saw = ( );
   push @classes, map { $s->_parents( $_ ) }
-                   grep { $_->isa($pkg) }
+                   grep { ( ! $saw{$_}++ ) && $_->isa($pkg) }
                      @{"$class\::ISA"};
   
   return @classes;

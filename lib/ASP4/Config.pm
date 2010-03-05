@@ -34,7 +34,8 @@ sub _init_inc
   my $s = shift;
   
   my %saw = map { $_ => 1 } @INC;
-  push @INC, grep { ! $saw{$_}++ } ( $s->system->libs, $s->web->handler_root, $s->web->page_cache_root );
+  my $web = $s->web;
+  push @INC, grep { ! $saw{$_}++ } ( $s->system->libs, $web->handler_root, $web->page_cache_root );
 }# end _init_inc()
 
 

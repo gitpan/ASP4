@@ -26,10 +26,11 @@ sub new
   }, $class;
   $s->config->_init_inc();
   
-  $s->config->load_class( $s->config->web->handler_resolver );
-  $s->config->load_class( $s->config->web->handler_runner );
-  $s->config->load_class( $s->{config}->data_connections->session->manager );
-  $s->config->load_class( $s->config->web->filter_resolver );
+  my $web = $s->config->web;
+  $s->config->load_class( $web->handler_resolver );
+  $s->config->load_class( $web->handler_runner );
+  $s->config->load_class( $s->config->data_connections->session->manager );
+  $s->config->load_class( $web->filter_resolver );
   
   return $s;
 }# end new()

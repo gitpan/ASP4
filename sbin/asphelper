@@ -58,21 +58,38 @@ if( $@ )
   die "[ERROR]: $error\n";
 }# end if()
 
-eval {
-  $dbh->do(q~
-  DROP TABLE IF EXISTS asp_sessions
-  ~);
-  $dbh->do(q~
-  CREATE TABLE asp_sessions (
-    session_id   char(32) NOT NULL primary key,
-    session_data blob,
-    created_on   datetime default NULL,
-    modified_on  datetime default NULL
-  ) ENGINE=MyISAM DEFAULT CHARSET=latin1
-  ~);
-  $dbh->disconnect();
-  1;
-} or die $@;
+# Write the ddl.sql file:
+make_path("$domain/sbin");
+unless( -f "$domain/sbin/ddl.sql" )
+{
+  warn "$domain/sbin/ddl.sql\n";
+  open my $ofh, '>', "$domain/sbin/ddl.sql"
+    or die "Cannot open '$domain/sbin/ddl.sql' for writing: $!";
+  print $ofh <<"SQL";
+
+drop table if exists asp_sessions;
+
+create table asp_sessions (
+  session_id   char(32) not null primary key,
+  session_data blob,
+  created_on   datetime default null,
+  modified_on  datetime default null
+) engine=myisam;
+
+SQL
+  close($ofh);
+  open my $ifh, "$domain/sbin/ddl.sql"
+    or die "Cannot open '$domain/sbin/ddl.sql' for reading: $!";
+  local $/ = ';';
+  while( my $cmd = <$ifh> )
+  {
+    $cmd =~ s/^\s+//s;
+    $cmd =~ s/\s+$//s;
+    next unless $cmd;
+    $dbh->do($cmd);
+  }# end while()
+  close($ifh);
+}# end unless()
 
 
 # Write our configs:
@@ -82,7 +99,7 @@ unless( -f "$domain/conf/asp4-config.json" )
   warn "$domain/conf/asp4-config.json\n";
   open my $ofh, '>', "$domain/conf/asp4-config.json"
     or die "Cannot open '$domain/conf/asp4-config.json' for writing: $!";
-  my $json = generic_config();
+  my $json = generic_config( $dbName && $dbUser );
   $json =~ s/\%CWD\%/$cwd/igs;
   $json =~ s/\%domain\%/$domain/igs;
   $json =~ s/\%appName\%/$appName/igs;
@@ -258,21 +275,32 @@ my \$api; BEGIN { \$api = ASP4::API->new }
 
 @{[ $dbName ? qq(use_ok('$appName\::Model');) : '' ]}
 
-ok( my \$res = \$api->ua->get("/"), "Got '/'.");
+my \$res = \$api->ua->post("/handlers/$hClass.echo", {
+  hello => "world"
+});
+like \$res->content, qr('hello'\\s+\\=\>\\s+'world'), "/handlers/$hClass.echo?hello=world works";
+
+ok( \$res = \$api->ua->get("/"), "Got '/'.");
 ok( \$res->is_success, "GET / is successful.");
 ok( \$res->content, "Got some content also.");
 
+
+TEST
+
+  if( $dbName && $dbUser )
+  {
+    print $ofh <<"TEST";
 for( 0..10 )
 {
   like \$res->content, qr(visited this page \$_ time), "Simple session counter: \$_ visits recorded.";
   \$res = \$api->ua->get("/");
 }# end for()
 
-\$res = \$api->ua->post("/handlers/$hClass.echo", {
-  hello => "world"
-});
-like \$res->content, qr('hello'\\s+\\=\>\\s+'world'), "/handlers/$hClass.echo?hello=world works";
+TEST
+  }# end if()
 
+
+    print $ofh <<"TEST";
 
 # More tests can go here or in other files.
 
@@ -289,8 +317,11 @@ chdir($domain);
 exec("prove -rv t");
 
 
-sub generic_config {
-  <<'EOF';
+sub generic_config
+{
+  my ($has_db) = @_;
+
+  my $str = <<'EOF';
 {
   "system": {
     "post_processors": [
@@ -326,6 +357,11 @@ sub generic_config {
     ]
   },
   "data_connections": {
+EOF
+
+  if( $has_db )
+  {
+    $str .= <<'EOF';
     "session": {
       "manager":          "ASP4::SessionStateManager",
       "cookie_name":      "session-id",
@@ -340,9 +376,34 @@ sub generic_config {
       "username":         "%dbUser%",
       "password":         "%dbPass%"
     }
+EOF
+  }
+  else
+  {
+    $str .= <<'EOF';
+    "session": {
+      "manager":          "ASP4::SessionStateManager::NonPersisted",
+      "cookie_name":      "session-id",
+      "cookie_domain":    "*",
+      "session_timeout":  30,
+      "dsn":              "DBI:mysql:dbname:hostname",
+      "username":         "admin",
+      "password":         "swordfish"
+    },
+    "main": {
+      "dsn":              "DBI:mysql:dbname:hostname",
+      "username":         "admin",
+      "password":         "swordfish"
+    }
+EOF
+  }# end if()
+
+$str .= <<'EOF';
   }
 }
 EOF
+
+  return $str;
 }
 
 
@@ -395,7 +456,7 @@ asphelper - Generate an ASP4 skeleton web application
 
 =head1 USAGE
 
-  asphelper --app=AppName --domain=domain.com --email=you\@your-email.com [--host=dbhost --db=dbname  --user=dbusername]
+  asphelper --app=AppName --domain=example.com --email=you@your-email.com [--host=dbhost --db=dbname  --user=dbusername]
 
 If you specify C<--dbname> and C<--dbuser> it will ask you for a database password - completely optional.
 
@@ -407,6 +468,24 @@ After successfully answering its questions, C<asphelper> will generate a skeleto
 including config files, full directory structure and a simple unit test.
 
 Use the resulting application as a starting-point for your own development.
+
+  example.com/
+  |-- conf
+  |   |-- asp4-config.json
+  |   `-- httpd.conf
+  |-- handlers
+  |   `-- example
+  |       `-- echo.pm
+  |-- htdocs
+  |   `-- index.asp
+  |-- lib
+  |   `-- Example
+  |       `-- Model.pm
+  |-- sbin
+  |   `-- ddl.sql
+  `-- t
+      `-- 010-basic
+          `-- 010-compile.t
 
 B<NOTE:> If L<Class::DBI::Lite> is installed, a base Model class will be created based on
 L<Class::DBI::Lite>.  See L<Class::DBI::Lite> for details on how to use it.

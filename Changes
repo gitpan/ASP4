@@ -1,4 +1,13 @@
 
+2010-03-04    v1.020
+  - Now asphelper will output sbin/ddl.sql, which contains the structure of the 
+    asp_sessions database table.  This is a handy place to start describing the
+    database structure of a web application.
+  - If $Config->web->data_connections->session->session_timeout is set to '*' then
+    the session lasts as long as the browser keeps the cookie around.
+  - 20% performance increase by using Cwd::fastcwd() instead of Cwd::cwd() and a
+    few other minor tweaks.
+
 2010-03-02    v1.019
   - Fixed a bug in asphelper that caused some problems creating a skeleton website.
 

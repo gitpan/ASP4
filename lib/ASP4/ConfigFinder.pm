@@ -3,7 +3,7 @@ package ASP4::ConfigFinder;
 
 use strict;
 use warnings 'all';
-use Cwd 'cwd';
+use Cwd 'fastcwd';
 
 our $CONFIGFILE = 'asp4-config.json';
 
@@ -12,7 +12,7 @@ sub config_path
 {
   my $path = $CONFIGFILE;
   
-  my $root = $ENV{DOCUMENT_ROOT} || cwd();
+  my $root = $ENV{DOCUMENT_ROOT} || fastcwd();
   
   # Try test dir:
   if( -f "$root/t/conf/$CONFIGFILE" )

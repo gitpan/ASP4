@@ -4,7 +4,7 @@ package ASP4::UserAgent;
 use strict;
 use warnings 'all';
 use Carp 'confess';
-use Cwd 'cwd';
+use Cwd 'fastcwd';
 use HTTP::Request::Common;
 use HTTP::Response;
 
@@ -17,7 +17,7 @@ use ASP4::Mock::RequestRec;
 sub new
 {
   return bless {
-    cwd         => cwd(),
+    cwd         => fastcwd(),
     http_cookie => '',
     cookies     => { },
     referer     => '',
