@@ -228,7 +228,7 @@ sub handle_error
     line        => $line,
     stacktrace  => $error,
   };
-  warn "[Error: @{[ HTTP::Date::time2iso() ]}] $main\n";
+  warn "[Error: @{[ HTTP::Date::time2iso() ]}] @{[ $main || $error ]}\n";
   
   $s->config->load_class( $s->config->errors->error_handler );
   my $error_handler = $s->config->errors->error_handler->new();

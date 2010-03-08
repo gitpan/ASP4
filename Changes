@@ -1,4 +1,8 @@
 
+2010-03-08    v1.021
+  - Removed a warning that popped up now and then about the use of an uninitialized value.
+  - Added a more informative "Yay you're finished!" message after running asphelper.
+
 2010-03-04    v1.020
   - Now asphelper will output sbin/ddl.sql, which contains the structure of the 
     asp_sessions database table.  This is a handy place to start describing the

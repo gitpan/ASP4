@@ -314,7 +314,40 @@ warn "="x60, "\n";
 chdir($domain);
 `asp4 /` =~ m{You have visited this page}
   or die "Warning: ASP script contents (/index.asp) not what we expected!";
-exec("prove -rv t");
+system("prove -rv t");
+
+# Talk about the config now:
+warn <<"END";
+
+*** ALMOST DONE! ***
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Make sure your Apache webserver's configuration includes the following line:
+
+Include $cwd/$domain/conf/httpd.conf
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+*** TO TEST IT IN YOUR BROWSER ***
+
+1) Add the following line to your /etc/hosts file:
+  127.0.0.1    $domain
+2) Close all of your browser's windows.
+3) Navigate to http://$domain
+
+
+*** TO RUN YOUR TESTS ***
+
+cd $cwd/$domain
+prove -rv t
+
+
+*** TO EXECUTE AN ASP SCRIPT ***
+
+cd $cwd/$domain
+asp4 /index.asp
+
+END
 
 
 sub generic_config
