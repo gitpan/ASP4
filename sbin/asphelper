@@ -319,33 +319,28 @@ system("prove -rv t");
 # Talk about the config now:
 warn <<"END";
 
-*** ALMOST DONE! ***
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Make sure your Apache webserver's configuration includes the following line:
+!!!!!!!!!!!!!!!!!!!!!! CONGRATULATIONS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*** Update your Apache Config ***
+  Include $cwd/$domain/conf/httpd.conf
 
-Include $cwd/$domain/conf/httpd.conf
+*** Add This to your /etc/hosts File ***
+  127.0.0.1     $domain
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*** Restart Apache ***
+  Maybe:  sudo /etc/init.d/httpd restart
+  Or:     sudo /etc/init.d/apache2 restart
+  Or:     service apache2 restart
 
+*** To Test it in Your Browser ***
+  Navigate to http://$domain
 
-*** TO TEST IT IN YOUR BROWSER ***
+*** To Run the Unit Tests ***
+  cd $cwd/$domain
+  prove -rv t
 
-1) Add the following line to your /etc/hosts file:
-  127.0.0.1    $domain
-2) Close all of your browser's windows.
-3) Navigate to http://$domain
-
-
-*** TO RUN YOUR TESTS ***
-
-cd $cwd/$domain
-prove -rv t
-
-
-*** TO EXECUTE AN ASP SCRIPT ***
-
-cd $cwd/$domain
-asp4 /index.asp
+*** To Run an ASP Script From the Command Line ***
+  cd $cwd/$domain
+  asp4 /index.asp
 
 END
 

@@ -136,7 +136,9 @@ sub create
       ?, ?, ?, ?
     )
 
-  my $now = time2iso();
+  my $time = time();
+  my $now = time2iso($time);
+  $s->{__lastMod} = $time;
   
   $s->sign();
   
@@ -215,7 +217,9 @@ sub save
   my ($s) = @_;
   
   no warnings 'uninitialized';
-  return unless $s->is_changed;
+  my $seconds_since_last_modified = time() - $s->{__lastMod};
+  return unless ( $seconds_since_last_modified > 60 ) || $s->is_changed;
+  $s->{__lastMod} = time();
   $s->sign;
   
   local $s->db_Main->{AutoCommit} = 1;

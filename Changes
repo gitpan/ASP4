@@ -1,4 +1,13 @@
 
+2010-03-08    v1.022
+  - asphelper's final instructions are now more clear and concise.
+  - Fixes a bug that caused active sessions to timeout as though inactive simply
+    because they were not changed before the timeout occurred.  Now, $Session->save()
+    checks to see if it's been more than 60 seconds since the last time the __lastMod
+    was changed - and if it has been more than 60 seconds, the session is saved
+    and the __lastMod value is updated to time() - thus preventing expiry of 
+    active sessions.
+
 2010-03-08    v1.021
   - Removed a warning that popped up now and then about the use of an uninitialized value.
   - Added a more informative "Yay you're finished!" message after running asphelper.
