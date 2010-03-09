@@ -65,6 +65,7 @@ t/010-basic/070-memory-leak.t
 t/010-basic/080-cleanup-handlers.t
 t/010-basic/090-everything.t
 t/020-bench/010-hello.t
+t/030-filters/010-seo.t
 t/999-finish/000-cleanup.t
 t/conf/asp4-config.json
 t/conf/httpd.conf
@@ -92,8 +93,10 @@ t/htdocs/pageparser/has-include.asp
 t/htdocs/pageparser/has-nested-include.asp
 t/htdocs/pageparser/is-include.asp
 t/htdocs/pageparser/master.asp
+t/htdocs/seo-page/index.asp
 t/htdocs/useragent/hello-world.asp
 t/htdocs/useragent/simple-args.asp
 t/htdocs/useragent/simple-form.asp
 t/htdocs/useragent/upload-form.asp
 t/lib/My/Filter.pm
+t/lib/My/SEOFilter.pm

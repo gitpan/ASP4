@@ -35,6 +35,10 @@
     "handler_runner":   "ASP4::HandlerRunner",
     "filter_resolver":  "ASP4::FilterResolver",
     "request_filters": [
+      {
+        "uri_match":  "^/seo/.*",
+        "class":      "My::SEOFilter"
+      }
     ],
     "disable_persistence": [
       {

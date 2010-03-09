@@ -1,4 +1,10 @@
 
+2010-03-08    v1.023
+  - ASP4::HTTPContext now checks to see if any RequestFilters match a uri before
+    returning a 404.  This is helpful for SEO optimizations.
+  - New feature: $Request->Reroute("/new-uri/?foo=bar")
+    * Also very useful for SEO.
+
 2010-03-08    v1.022
   - asphelper's final instructions are now more clear and concise.
   - Fixes a bug that caused active sessions to timeout as though inactive simply

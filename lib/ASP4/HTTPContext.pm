@@ -75,14 +75,14 @@ sub setup_request
     }# end if()
   }
   
-  eval {
-    $s->{handler} = $s->config->web->handler_resolver->new()->resolve_request_handler( $r->uri );
-  };
-  if( $@ )
-  {
-    $s->server->{LastError} = $@;
-    return $s->handle_error;
-  }# end if()
+#  eval {
+#    $s->{handler} = $s->config->web->handler_resolver->new()->resolve_request_handler( $r->uri );
+#  };
+#  if( $@ )
+#  {
+#    $s->server->{LastError} = $@;
+#    return $s->handle_error;
+#  }# end if()
   
   return $_instance;
 }# end setup_request()
@@ -158,8 +158,6 @@ sub execute
 {
   my ($s, $args, $is_include) = @_;
   
-  return $s->response->Status( 404 ) unless $s->{handler};
-
   unless( $is_include )
   {
     # Set up and execute any matching request filters:
@@ -178,6 +176,17 @@ sub execute
     my $start_res = $s->handle_phase( $s->global_asa->can('Script_OnStart') );
     return $start_res if defined( $start_res );
   }# end unless()
+
+  eval {
+    $s->{handler} = $s->config->web->handler_resolver->new()->resolve_request_handler( $s->r->uri );
+  };
+  if( $@ )
+  {
+    $s->server->{LastError} = $@;
+    return $s->handle_error;
+  }# end if()
+
+  return $s->response->Status( 404 ) unless $s->{handler};
   
   eval {
     $s->config->load_class( $s->handler );

@@ -75,6 +75,36 @@ sub FileUpload
 }# end FileUpload()
 
 
+sub Reroute
+{
+  my ($s, $where) = @_;
+  
+  my ($uri, $querystring) = split /\?/, $where;
+  $querystring ||= "";
+  $s->context->r->uri( $uri );
+  my $args = $s->context->r->args;
+  $args .= $args ? "&$querystring" : $querystring;
+  $s->context->r->args( $args );
+  $ENV{QUERY_STRING} = $args;
+  $ENV{REQUEST_URI} = $uri . ( length($args) ? "?$args" : "" );
+  
+  my $cgi = $s->context->cgi;
+  my $Form = $s->context->request->Form;
+  map {
+    # CGI->Vars joins multi-value params with a null byte.  Which sucks.
+    # To avoid that behavior, we do this instead:
+    my @val = $cgi->param($_);
+    $Form->{$_} = scalar(@val) > 1 ? \@val : shift(@val);
+  } $cgi->param;
+  
+  ( my $path = $s->context->server->MapPath( $uri ) ) =~ s{/+$}{};
+  $path .= "/index.asp" if -f "$path/index.asp";
+  $ENV{SCRIPT_FILENAME} = $path;
+  $ENV{SCRIPT_NAME} = $path;
+  return $s->context->response->Declined;
+}# end Reroute()
+
+
 sub DESTROY
 {
   my $s = shift;
