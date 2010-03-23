@@ -1,4 +1,9 @@
 
+
+2010-03-22    v1.024
+  - $Request->Reroute() with additional querystring parameters was not adding
+    those extra parameters to $Form.  Now it does.
+
 2010-03-08    v1.023
   - ASP4::HTTPContext now checks to see if any RequestFilters match a uri before
     returning a 404.  This is helpful for SEO optimizations.

@@ -26,6 +26,7 @@ requires    'CGI'                     => 3.43;    # For...cgi stuff...
 requires    'HTTP::Body'              => 0;
 requires    'Ima::DBI'                => 0.35;    # For session state.
 requires    'JSON::XS'                => 0;       # For Configs
+requires    'Term::ReadKey'           => 0;       # For asphelper script.
 
 install_script 'sbin/asp4';
 install_script 'sbin/asphelper';

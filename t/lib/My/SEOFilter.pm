@@ -10,9 +10,14 @@ sub run
 {
   my ($s, $context) = @_;
   
-  my ($id) = $ENV{REQUEST_URI} =~ m{/seo/(\d+)/};
-  
-  return $Request->Reroute("/seo-page/?id=$id");
+  if( my ($id) = $ENV{REQUEST_URI} =~ m{/seo/(\d+)/} )
+  {
+    return $Request->Reroute("/seo-page/?id=$id");
+  }
+  elsif( my ($chars) = $ENV{REQUEST_URI} =~ m{/seo2/(abc)/} )
+  {
+    return $Request->Reroute("/handlers/dev.seo_handler?chars=$chars");
+  }# end if()
 }# end run()
 
 1;# return true:

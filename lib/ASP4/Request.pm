@@ -91,11 +91,9 @@ sub Reroute
   my $cgi = $s->context->cgi;
   my $Form = $s->context->request->Form;
   map {
-    # CGI->Vars joins multi-value params with a null byte.  Which sucks.
-    # To avoid that behavior, we do this instead:
-    my @val = $cgi->param($_);
-    $Form->{$_} = scalar(@val) > 1 ? \@val : shift(@val);
-  } $cgi->param;
+    my ($k,$v) = split /\=/, $_;
+    $Form->{ $cgi->unescape($k) } = $cgi->unescape( $v );
+  } split /&/, $querystring;
   
   ( my $path = $s->context->server->MapPath( $uri ) ) =~ s{/+$}{};
   $path .= "/index.asp" if -f "$path/index.asp";

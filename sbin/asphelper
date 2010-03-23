@@ -4,9 +4,11 @@ use strict;
 use warnings 'all';
 use Getopt::Long;
 use Term::ReadKey;
-use File::Path 'make_path';
+use File::Path;
 use DBI;
 use Cwd 'cwd';
+
+*make_path = \&File::Path::make_path;
 
 
 my (
@@ -474,6 +476,9 @@ PerlModule ASP4::ModPerl
 
 EOF
 }
+
+
+
 
 
 =pod

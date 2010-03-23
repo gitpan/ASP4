@@ -38,6 +38,10 @@
       {
         "uri_match":  "^/seo/.*",
         "class":      "My::SEOFilter"
+      },
+      {
+        "uri_match":  "^/seo2/.*",
+        "class":      "My::SEOFilter"
       }
     ],
     "disable_persistence": [
