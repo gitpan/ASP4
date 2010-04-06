@@ -54,7 +54,6 @@ runprofiler.sh
 runtests.sh
 sbin/asp4
 sbin/asphelper
-t.pl
 t/010-basic/000-setup.t
 t/010-basic/010-compile.t
 t/010-basic/020-pageparser.t

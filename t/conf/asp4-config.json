@@ -67,7 +67,7 @@
     "session": {
       "manager":          "ASP4::SessionStateManager",
       "cookie_name":      "session-id",
-      "cookie_domain":    ".mysite.com",
+      "cookie_domain":    "*",
       "session_timeout":  "*",
       "dsn":              "DBI:SQLite:dbname=/tmp/db_asp4",
       "username":         "",

@@ -27,6 +27,19 @@ sub new
     $_->{disable_application} ||= 0;
     $_ = $class->SUPER::new( $_ );
   } $s->disable_persistence;
+  
+  # Do we have "routes"?:
+  eval { require Router::Generic };
+  if( $s->{routes} && ! $@ )
+  {
+    my $router = Router::Generic->new();
+    if( my @routes = eval { @{ $s->routes } } )
+    {
+      map { $router->add_route( %$_ ) } @routes;
+    }# end if()
+    $s->{router} = $router;
+  }# end if()
+  
   return $s;
 }# end new()
 
@@ -45,6 +58,9 @@ sub disable_persistence
   
   @{ $s->{disable_persistence} };
 }# end disable_persistence()
+
+
+sub router { shift->{router} }
 
 1;# return true:
 
