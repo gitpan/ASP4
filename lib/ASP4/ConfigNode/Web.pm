@@ -153,6 +153,34 @@ It is recommended that a temporary path is used - '/tmp' on most Linux distribut
 
 Returns a list of ConfigNodes that represent individual C<filter> elements in the configuration.
 
+=head2 router
+
+B<*IF*> you have defined a "routes" section in your config - like this:
+
+  ...
+  "web": {
+    ...
+    "routes": [
+      {
+        "name":   "Wiki",
+        "path":   "/:lang-:locale/{*page}",
+        "target": "/wiki-page.asp",
+        "defaults": {
+          "page":   "home",
+          "lang":   "en",
+          "locale": "us"
+        }
+      }
+    ]
+    ...
+  }
+
+Then the C<router> property will return a L<Router::Generic> object based on your routes.
+
+You can access it from the C<$Config> like this:
+
+  $Config->web->router
+
 =head1 SEE ALSO
 
 L<ASP4::RequestFilter>

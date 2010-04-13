@@ -1,5 +1,17 @@
 
 
+2010-04-13    v1.026
+  - Now both POST'ed and GET'ed parameters are added to $Form.  This means that if
+    you...
+    <form action="/page/?foo=abc" method="post"><input name="bar" value="123" /></form>
+    ...both foo=abc and bar=123 will be in $Form.  Before this update, only bar=123 would
+    be there, and foo=abc would be lost.
+
+2010-04-06    v1.025
+  - If Router::Generic is installed, ASP4::ConfigNode::Web will create $Config->web->router
+    based on the "routes" segment of asp4-config.json.
+  - No documentation about this yet.
+
 2010-03-22    v1.024
   - $Request->Reroute() with additional querystring parameters was not adding
     those extra parameters to $Form.  Now it does.

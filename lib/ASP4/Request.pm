@@ -13,12 +13,22 @@ sub new
   my $s = bless {
     %args,
     form  => {
-      map {
-        # CGI->Vars joins multi-value params with a null byte.  Which sucks.
-        # To avoid that behavior, we do this instead:
-        my @val = $cgi->param($_);
-        $_ => scalar(@val) > 1 ? \@val : shift(@val)
-      } $cgi->param
+      (
+        map {
+          # CGI->Vars joins multi-value params with a null byte.  Which sucks.
+          # To avoid that behavior, we do this instead:
+          my @val = $cgi->param($_);
+          $_ => scalar(@val) > 1 ? \@val : shift(@val)
+        } $cgi->param
+      ),
+      (
+        map {
+          # CGI->Vars joins multi-value params with a null byte.  Which sucks.
+          # To avoid that behavior, we do this instead:
+          my @val = $cgi->url_param($_);
+          $_ => scalar(@val) > 1 ? \@val : shift(@val)
+        } $cgi->url_param
+      ),
     },
   }, $class;
   

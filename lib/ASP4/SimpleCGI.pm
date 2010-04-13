@@ -118,6 +118,8 @@ sub param
   }# end if()
 }# end param()
 
+*url_param = \&param;
+
 
 sub Vars { shift->{params} }
 
