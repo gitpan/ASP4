@@ -1,5 +1,8 @@
 
 
+2010-04-15    v1.027
+  - ASP4::Request was not properly URLDecoding parameters.  Now it does.
+
 2010-04-13    v1.026
   - Now both POST'ed and GET'ed parameters are added to $Form.  This means that if
     you...
