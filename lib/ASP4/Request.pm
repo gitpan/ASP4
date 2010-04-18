@@ -96,7 +96,7 @@ sub Reroute
   $args .= $args ? "&$querystring" : $querystring;
   $s->context->r->args( $args );
   $ENV{QUERY_STRING} = $args;
-  $ENV{REQUEST_URI} = $uri . ( length($args) ? "?$args" : "" );
+#  $ENV{REQUEST_URI} = $uri . ( length($args) ? "?$args" : "" );
   
   my $cgi = $s->context->cgi;
   my $Form = $s->context->request->Form;
