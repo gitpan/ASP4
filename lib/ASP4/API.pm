@@ -28,7 +28,8 @@ sub new
   return bless {
     test_data   => $test_data,
     properties  => $properties,
-    ua          => ASP4::UserAgent->new()
+    ua          => ASP4::UserAgent->new(),
+    config      => $config,
   }, $class;
 }# end new()
 
@@ -37,7 +38,8 @@ sub test_data   { shift->{test_data} }
 sub properties  { shift->{properties} }
 sub ua          { shift->{ua} }
 sub context     { ASP4::HTTPContext->current }
-sub config      { ASP4::ConfigLoader->load }
+#sub config      { ASP4::ConfigLoader->load }
+sub config      { shift->{config} }
 
 sub data        { shift->test_data }    # Deprecated! - for Apache2::ASP compat only.
 

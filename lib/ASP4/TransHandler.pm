@@ -17,6 +17,7 @@ sub handler : method
   my ($class, $r) = @_;
   
   $ENV{DOCUMENT_ROOT} ||= $r->document_root;
+  $ENV{REMOTE_ADDR} = $r->connection->get_remote_host();
   
   return -1;
 }# end handler()

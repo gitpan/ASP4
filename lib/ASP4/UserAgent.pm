@@ -26,7 +26,7 @@ sub new
 }# end new()
 
 sub context { ASP4::HTTPContext->current }
-sub config { ASP4::ConfigLoader->load }
+sub config { chdir(shift->{cwd}); ASP4::ConfigLoader->load }
 
 
 sub get
@@ -39,7 +39,7 @@ sub get
   my $referer = $ENV{HTTP_REFERER};
   %ENV = (
     %{ $s->{env} },
-    HTTP_HOST       => $s->{env}->{HTTP_HOST} || 'localhost',
+    HTTP_HOST       => $s->{env}->{HTTP_HOST} || $s->{cwd},
     HTTP_REFERER    => $referer || '',
     DOCUMENT_ROOT   => $s->config->web->www_root,
     REQUEST_METHOD  => 'GET',

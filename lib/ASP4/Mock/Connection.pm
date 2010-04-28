@@ -19,6 +19,7 @@ sub new {
 
 sub aborted { shift->{aborted} }
 sub client_socket { shift->{client_socket} }
+sub remote_addr { }
 
 1;# return true:
 

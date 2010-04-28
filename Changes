@@ -1,4 +1,9 @@
 
+2010-04-18    v1.029
+  - The document root was not always set properly in some very, very strange
+    circumstances.
+  - Upgrade recommended.
+
 2010-04-18    v1.028
   - $Request->Reroute($uri) no longer changes $ENV{REQUEST_URI} to $uri.
 
