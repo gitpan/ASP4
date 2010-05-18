@@ -1,4 +1,7 @@
 
+2010-05-18    v1.030
+  - $ENV{HTTP_HOST} is set to $r->hostname or $ENV{DOCUMENT_ROOT} in ASP4::ModPerl and ASP4::UserAgent, respectively.
+
 2010-04-18    v1.029
   - The document root was not always set properly in some very, very strange
     circumstances.
