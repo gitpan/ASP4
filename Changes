@@ -1,4 +1,7 @@
 
+2010-05019    v1.031
+  - Migrated from Ima::DBI to Ima::DBI::Contextual.
+
 2010-05-18    v1.030
   - $ENV{HTTP_HOST} is set to $r->hostname or $ENV{DOCUMENT_ROOT} in ASP4::ModPerl and ASP4::UserAgent, respectively.
 

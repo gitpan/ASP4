@@ -19,12 +19,12 @@ requires    'Data::Properties::YAML'  => 0;
 requires    'Cwd'                     => 0;
 requires    'Digest::MD5'             => 0;       # Session state.
 requires    'DBI'                     => 0;       # Session state.
+requires    'Ima::DBI::Contextual'    => 0;       # Session state.
 requires    'Storable'                => 0;       # Session state.
 requires    'HTTP::Date'              => 0;       # For Session timeouts.
 requires    'Mail::Sendmail'          => 0;       # For sending email.
 requires    'CGI'                     => 3.43;    # For...cgi stuff...
 requires    'HTTP::Body'              => 0;
-requires    'Ima::DBI'                => 0.35;    # For session state.
 requires    'JSON::XS'                => 0;       # For Configs
 requires    'Term::ReadKey'           => 0;       # For asphelper script.
 

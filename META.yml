@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               ASP4
-version:            1.030
+version:            1.031
 abstract:           Fast, Simple, Scalable Web Development
 author:
     - John Drago <jdrago_999@yahoo.com>
@@ -18,12 +18,12 @@ requires:
     Cwd:                      0
     Digest::MD5:              0
     DBI:                      0
+    Ima::DBI::Contextual:     0
     Storable:                 0
     HTTP::Date:               0
     Mail::Sendmail:           0
     CGI:                      3.43
     HTTP::Body:               0
-    Ima::DBI:                 0.35
     JSON::XS:                 0
 recommends:
     Router::Generic:          0.011

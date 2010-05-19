@@ -3,7 +3,7 @@ package ASP4::SessionStateManager;
 
 use strict;
 use warnings 'all';
-use base 'Ima::DBI';
+use base 'Ima::DBI::Contextual';
 use HTTP::Date qw( time2iso time2str str2time );
 use Digest::MD5 'md5_hex';
 use Storable qw( freeze thaw );
