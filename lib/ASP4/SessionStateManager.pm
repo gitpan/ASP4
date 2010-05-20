@@ -18,7 +18,7 @@ sub new
   my $conn = ASP4::ConfigLoader->load->data_connections->session;
   
   local $^W = 0;
-  __PACKAGE__->set_db('Main',
+  $class->set_db('Session',
     $conn->dsn,
     $conn->username,
     $conn->password
@@ -91,8 +91,8 @@ sub verify_session_id
   my $is_active;
   if( $timeout eq '*' )
   {
-    local $s->db_Main->{AutoCommit} = 1;
-    my $sth = $s->db_Main->prepare_cached(<<"");
+    local $s->db_Session->{AutoCommit} = 1;
+    my $sth = $s->db_Session->prepare_cached(<<"");
       SELECT *
       FROM asp_sessions
       WHERE session_id = ?
@@ -104,8 +104,8 @@ sub verify_session_id
   else
   {
     my $range_start = time() - ( $timeout * 60 );
-    local $s->db_Main->{AutoCommit} = 1;
-    my $sth = $s->db_Main->prepare_cached(<<"");
+    local $s->db_Session->{AutoCommit} = 1;
+    my $sth = $s->db_Session->prepare_cached(<<"");
       SELECT *
       FROM asp_sessions
       WHERE session_id = ?
@@ -124,8 +124,8 @@ sub create
 {
   my ($s, $id) = @_;
   
-  local $s->db_Main->{AutoCommit} = 1;
-  my $sth = $s->db_Main->prepare_cached(<<"");
+  local $s->db_Session->{AutoCommit} = 1;
+  my $sth = $s->db_Session->prepare_cached(<<"");
     INSERT INTO asp_sessions (
       session_id,
       session_data,
@@ -160,8 +160,8 @@ sub retrieve
 {
   my ($s, $id) = @_;
 
-  local $s->db_Main->{AutoCommit} = 1;
-  my $sth = $s->db_Main->prepare_cached(<<"");
+  local $s->db_Session->{AutoCommit} = 1;
+  my $sth = $s->db_Session->prepare_cached(<<"");
     SELECT session_data, modified_on
     FROM asp_sessions
     WHERE session_id = ?
@@ -178,8 +178,8 @@ sub retrieve
   {
     if( $seconds_since_last_modified >= 1 )
     {
-      local $s->db_Main->{AutoCommit} = 1;
-      my $sth = $s->db_Main->prepare_cached(<<"");
+      local $s->db_Session->{AutoCommit} = 1;
+      my $sth = $s->db_Session->prepare_cached(<<"");
       UPDATE asp_sessions SET
         modified_on = ?
       WHERE session_id = ?
@@ -193,8 +193,8 @@ sub retrieve
     my $timeout_seconds = $max_timeout * 60;
     if( $seconds_since_last_modified >= 1 && $seconds_since_last_modified < $timeout_seconds )
     {
-      local $s->db_Main->{AutoCommit} = 1;
-      my $sth = $s->db_Main->prepare_cached(<<"");
+      local $s->db_Session->{AutoCommit} = 1;
+      my $sth = $s->db_Session->prepare_cached(<<"");
       UPDATE asp_sessions SET
         modified_on = ?
       WHERE session_id = ?
@@ -222,8 +222,8 @@ sub save
   $s->{__lastMod} = time();
   $s->sign;
   
-  local $s->db_Main->{AutoCommit} = 1;
-  my $sth = $s->db_Main->prepare_cached(<<"");
+  local $s->db_Session->{AutoCommit} = 1;
+  my $sth = $s->db_Session->prepare_cached(<<"");
     UPDATE asp_sessions SET
       session_data = ?,
       modified_on = ?

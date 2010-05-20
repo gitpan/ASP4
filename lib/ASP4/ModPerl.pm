@@ -18,7 +18,7 @@ sub handler : method
 {
   my ($class, $r) = @_;
   
-  $ENV{DOCUMENT_ROOT} ||= $r->document_root;
+  $ENV{DOCUMENT_ROOT}   = $r->document_root;
   $ENV{REMOTE_ADDR}     = $r->connection->get_remote_host();
   $ENV{HTTP_HOST}       = $r->hostname;
   my $context = ASP4::HTTPContext->new();

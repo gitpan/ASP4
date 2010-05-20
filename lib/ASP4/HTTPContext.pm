@@ -32,7 +32,7 @@ sub new
   $s->config->load_class( $s->config->data_connections->session->manager );
   $s->config->load_class( $web->filter_resolver );
   
-  return $s;
+  return $_instance = $s;
 }# end new()
 
 
@@ -45,7 +45,7 @@ sub setup_request
   $s->{cgi} = $cgi;
   
   # Must instantiate $_instance before creating the other objects:
-  $_instance = $s;
+#  $_instance = $s;
   $s->{request}   ||= ASP4::Request->new();
   $s->{response}  ||= ASP4::Response->new();
   $s->{server}    ||= ASP4::Server->new();
@@ -180,6 +180,10 @@ sub execute
   eval {
     $s->{handler} = $s->config->web->handler_resolver->new()->resolve_request_handler( $s->r->uri );
   };
+
+warn "Handler[@{[ $s->r->uri ]}]($s->{handler})"
+  if $s->r->method =~ m/multipart/;
+
   if( $@ )
   {
     $s->server->{LastError} = $@;

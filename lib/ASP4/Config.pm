@@ -91,7 +91,7 @@ sub load_class
   my ($s, $class) = @_;
   
   (my $file = "$class.pm") =~ s/::/\//g;
-  eval { require $file }
+  eval { require $file; }
     or confess "Cannot load $class: $@";
 }# end load_class()
 

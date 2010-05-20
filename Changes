@@ -1,5 +1,9 @@
 
-2010-05019    v1.031
+2010-05-20    v1.032
+  - Fixed several issues related to running multiple web applications under different
+    VirtualHosts on the same server.
+
+2010-05-19    v1.031
   - Migrated from Ima::DBI to Ima::DBI::Contextual.
 
 2010-05-18    v1.030
