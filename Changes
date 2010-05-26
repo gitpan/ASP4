@@ -1,4 +1,9 @@
 
+2010-05-26    v1.033
+  - Fixed more issues related to running multiple web applications under different
+    VirutalHosts on the same server.  This time related to how Filters and Handlers
+    are cached - now not only by URL but also by $ENV{DOCUMENT_ROOT}.
+
 2010-05-20    v1.032
   - Fixed several issues related to running multiple web applications under different
     VirtualHosts on the same server.

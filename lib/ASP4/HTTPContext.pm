@@ -176,14 +176,11 @@ sub execute
     my $start_res = $s->handle_phase( $s->global_asa->can('Script_OnStart') );
     return $start_res if defined( $start_res );
   }# end unless()
-
+  
   eval {
     $s->{handler} = $s->config->web->handler_resolver->new()->resolve_request_handler( $s->r->uri );
   };
-
-warn "Handler[@{[ $s->r->uri ]}]($s->{handler})"
-  if $s->r->method =~ m/multipart/;
-
+  
   if( $@ )
   {
     $s->server->{LastError} = $@;

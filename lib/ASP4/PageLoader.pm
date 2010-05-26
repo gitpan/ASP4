@@ -44,10 +44,11 @@ sub load
   my ($class, %args) = @_;
   
   my $info = $class->discover( script_name => $args{script_name} );
+  my $key = ($ENV{DOCUMENT_ROOT}||"") . ":$info->{filename}";
   if( $class->needs_recompile( $info->{saved_to}, $info->{filename} ) )
   {
     my $page = ASP4::PageParser->new( script_name => $info->{script_name} )->parse();
-    $FileTimes{ $info->{filename} } = stat($info->{filename})->mtime;
+    $FileTimes{ $key } = stat($info->{filename})->mtime;
     return $page;
   }# end if()
 
@@ -57,7 +58,7 @@ sub load
   ASP4::HandlerResolver->_forget_package( $info->{compiled_as}, $info->{package} );
   
   $config->load_class( $info->{package} );
-  $FileTimes{ $info->{filename} } ||= stat($info->{filename})->mtime;
+  $FileTimes{ $key } ||= stat($info->{filename})->mtime;
   return $info->{package}->new();
 }# end load()
 
@@ -67,7 +68,8 @@ sub needs_recompile
   my ($class, $compiled_as, $filename) = @_;
   
   return 1 unless $compiled_as && -f $compiled_as;
-  return stat($filename)->mtime > ( $FileTimes{ $filename } || stat($compiled_as)->mtime );
+  my $key = ($ENV{DOCUMENT_ROOT}||"") . ":$filename";
+  return stat($filename)->mtime > ( $FileTimes{ $key } || stat($compiled_as)->mtime );
 }# end needs_recompile()
 
 1;# return true:

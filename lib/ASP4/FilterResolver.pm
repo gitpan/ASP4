@@ -22,8 +22,9 @@ sub resolve_request_filters
   my ($s, $uri) = @_;
   
   ($uri) = split /\?/, $uri;
-  return @{$FilterCache{$uri}} if $FilterCache{$uri};
-  $FilterCache{$uri} = [
+  my $key = "$ENV{DOCUMENT_ROOT}:$uri";
+  return @{$FilterCache{$key}} if $FilterCache{$key};
+  $FilterCache{$key} = [
     grep {
       if( my $pattern = $_->uri_match )
       {
@@ -35,7 +36,7 @@ sub resolve_request_filters
       }# end if()
     } $s->context->config->web->request_filters
   ];
-  return @{$FilterCache{$uri}};
+  return @{$FilterCache{$key}};
 }# end resolve_request_filters()
 
 1;# return true:
