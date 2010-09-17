@@ -45,7 +45,6 @@ sub setup_request
   $s->{cgi} = $cgi;
   
   # Must instantiate $_instance before creating the other objects:
-#  $_instance = $s;
   $s->{request}   ||= ASP4::Request->new();
   $s->{response}  ||= ASP4::Response->new();
   $s->{server}    ||= ASP4::Server->new();
@@ -74,15 +73,6 @@ sub setup_request
       }# end unless()
     }# end if()
   }
-  
-#  eval {
-#    $s->{handler} = $s->config->web->handler_resolver->new()->resolve_request_handler( $r->uri );
-#  };
-#  if( $@ )
-#  {
-#    $s->server->{LastError} = $@;
-#    return $s->handle_error;
-#  }# end if()
   
   return $_instance;
 }# end setup_request()
@@ -167,14 +157,14 @@ sub execute
       $s->config->load_class( $filter->class );
       $filter->class->init_asp_objects( $s );
       my $res = $s->handle_phase(sub{ $filter->class->new()->run( $s ) });
-      if( defined($res) && $res != -1 )
+      if( $s->did_end || ( defined($res) && $res != -1 ) )
       {
         return $res;
       }# end if()
     }# end foreach()
     
     my $start_res = $s->handle_phase( $s->global_asa->can('Script_OnStart') );
-    return $start_res if defined( $start_res );
+    return $start_res if $s->did_end || defined( $start_res );
   }# end unless()
   
   eval {
@@ -384,6 +374,17 @@ Provided B<Just In Case> - returns the L<CGI> object for the HTTP request.
 Provided B<Just In Case> - returns the L<Apache2::RequestRec> for the HTTP request.
 
 B<NOTE:> Under L<ASP4::API> (eg: in a unit test) C<$r> will be an instance of L<ASP4::Mock::RequestRec> instead.
+
+=head1 BUGS
+
+It's possible that some bugs have found their way into this release.
+
+Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
+
+=head1 HOMEPAGE
+
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
+of ASP4 in action.
 
 =cut
 

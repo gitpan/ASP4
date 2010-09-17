@@ -81,15 +81,21 @@ sub _parents
 {
   my ($s, $class ) = @_;
   
-  my @classes = ( $class );
   no strict 'refs';
+  
+  if( @{"$class\::__PARENTS"} )
+  {
+    return @{"$class\::__PARENTS"};
+  }# end if()
+  
+  my @classes = ( $class );
   my $pkg = __PACKAGE__;
   my %saw = ( );
   push @classes, map { $s->_parents( $_ ) }
                    grep { ( ! $saw{$_}++ ) && $_->isa($pkg) }
                      @{"$class\::ISA"};
   
-  return @classes;
+  return @{"$class\::__PARENTS"} = @classes;
 }# end _parents()
 
 

@@ -77,6 +77,11 @@ sub handler : method
     warn $@ if $@;
     
     return 500 if $@;
+    if( $context->did_end && $context->did_send_headers )
+    {
+      $r->rflush();
+      $r->connection->client_socket->close();
+    }# end if()
     return $r->status =~ m/^2/ ? 0 : $r->status;
   }# end if()
   
@@ -98,10 +103,9 @@ In your httpd.conf
   PerlModule DBI
   PerlModule DBD::mysql
   PerlModule ASP4::ModPerl
-
-  # Admin website:
+  
   <VirtualHost *:80>
-
+  
     ServerName    mysite.com
     ServerAlias   www.mysite.com
     DocumentRoot  /usr/local/projects/mysite.com/htdocs
@@ -144,7 +148,7 @@ Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
 
 =head1 HOMEPAGE
 
-Please visit the ASP4 homepage at L<http://www.devstack.com/> to see examples
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
 of ASP4 in action.
 
 =head1 AUTHOR

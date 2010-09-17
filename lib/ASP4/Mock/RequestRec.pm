@@ -68,6 +68,7 @@ sub method          { uc( shift->{method} ) }
 sub pool            { shift->{pool} }
 sub connection      { shift->{connection} }
 sub headers_out     { shift->{headers_out} }
+sub headers_in      { shift->{headers_in} }
 sub err_headers_out { shift->{err_headers_out} }
 
 sub buffer          { shift->{buffer} } # Not documented:
@@ -182,6 +183,17 @@ Adds C<$str> to the outgoing response buffer.
 =head2 rflush( )
 
 Does nothing.
+
+=head1 BUGS
+
+It's possible that some bugs have found their way into this release.
+
+Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
+
+=head1 HOMEPAGE
+
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
+of ASP4 in action.
 
 =cut
 

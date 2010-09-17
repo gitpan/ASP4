@@ -256,7 +256,7 @@ Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
 
 =head1 HOMEPAGE
 
-Please visit the ASP4 homepage at L<http://www.devstack.com/> to see examples
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
 of ASP4 in action.
 
 =head1 AUTHOR

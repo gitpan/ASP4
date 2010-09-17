@@ -44,10 +44,11 @@ sub Form { shift->{form} }
 # Not documented - for a reason (want to deprecate):
 sub QueryString { shift->context->cgi->query_string() }
 
-sub Cookies { 
+sub Cookies
+{ 
   my ($s, $name) = @_;
   $name ? $s->context->cgi->cookie( $name ) : $s->context->cgi->cookie;
-}
+}# end Cookies()
 
 sub ServerVariables { $ENV{ $_[1] } }
 
@@ -96,7 +97,6 @@ sub Reroute
   $args .= $args ? "&$querystring" : $querystring;
   $s->context->r->args( $args );
   $ENV{QUERY_STRING} = $args;
-#  $ENV{REQUEST_URI} = $uri . ( length($args) ? "?$args" : "" );
   
   my $cgi = $s->context->cgi;
   my $Form = $s->context->request->Form;
@@ -176,6 +176,17 @@ So...if your form has this:
 Then you would get to it like this:
 
   my $upload = $Request->FileUpload('my_uploaded-file');
+
+=head1 BUGS
+
+It's possible that some bugs have found their way into this release.
+
+Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
+
+=head1 HOMEPAGE
+
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
+of ASP4 in action.
 
 =cut
 

@@ -65,6 +65,8 @@ PRE {
 <body>
 <h1>500 Server Error</h1>
 <h2>@{[ $error->{title} ]}</h2>
+<div><div class="label">URL:</div> <div class="info"><code>@{[ $ENV{HTTP_HOST} ]}@{[ $context->r->uri ]}</code></div></div>
+<div class="clear"></div>
 <div><div class="label">File:</div> <div class="info"><code>@{[ $error->{file} ]}</code></div></div>
 <div class="clear"></div>
 <div><div class="label">Line:</div> <div class="info">@{[ $error->{line} ]}</div></div>
@@ -76,10 +78,10 @@ PRE {
 <div class="clear"></div>
 <h3>\%ENV</h3>
 <div class="code"><pre>
-HTTP_REFERER: '@{[ $Server->HTMLEncode($ENV{HTTP_REFERER}) ]}'
-HTTP_COOKIE: '@{[ $Server->HTMLEncode($ENV{HTTP_COOKIE}) ]}'
-HTTP_USER_AGENT: '@{[ $Server->HTMLEncode($ENV{HTTP_USER_AGENT}) ]}'
-REMOTE_ADDR: '@{[ $Server->HTMLEncode($ENV{REMOTE_ADDR}) ]}'
+HTTP_REFERER:     '@{[ $Server->HTMLEncode($ENV{HTTP_REFERER}) ]}'
+HTTP_COOKIE:      '@{[ $Server->HTMLEncode($ENV{HTTP_COOKIE}) ]}'
+HTTP_USER_AGENT:  '@{[ $Server->HTMLEncode($ENV{HTTP_USER_AGENT}) ]}'
+REMOTE_ADDR:      '@{[ $Server->HTMLEncode($ENV{REMOTE_ADDR}) ]}'
 </pre></div>
 <h3>\$Form</h3>
 <div class="code"><pre>@{[ Dumper($Form) ]}</pre></div>
@@ -90,6 +92,7 @@ REMOTE_ADDR: '@{[ $Server->HTMLEncode($ENV{REMOTE_ADDR}) ]}'
 ERROR
   
   $Response->Write( $msg );
+  $Response->Flush;
   $Server->Mail(
     To                          => $Config->errors->mail_errors_to,
     From                        => $Config->errors->mail_errors_from,
@@ -172,7 +175,7 @@ Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
 
 =head1 HOMEPAGE
 
-Please visit the ASP4 homepage at L<http://www.devstack.com/> to see examples
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
 of ASP4 in action.
 
 =head1 AUTHOR

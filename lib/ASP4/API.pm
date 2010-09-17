@@ -38,9 +38,7 @@ sub test_data   { shift->{test_data} }
 sub properties  { shift->{properties} }
 sub ua          { shift->{ua} }
 sub context     { ASP4::HTTPContext->current }
-#sub config      { ASP4::ConfigLoader->load }
 sub config      { shift->{config} }
-
 sub data        { shift->test_data }    # Deprecated! - for Apache2::ASP compat only.
 
 
@@ -133,6 +131,17 @@ Returns an object representing your C</etc/properties.yaml> file.
 =head2 data
 
 Returns an object representing your C</etc/test_fixtures.yaml> file.
+
+=head1 BUGS
+
+It's possible that some bugs have found their way into this release.
+
+Use RT L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=ASP4> to submit bug reports.
+
+=head1 HOMEPAGE
+
+Please visit the ASP4 homepage at L<http://0x31337.org/code/> to see examples
+of ASP4 in action.
 
 =cut
 

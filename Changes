@@ -1,4 +1,9 @@
 
+2010-09-17    v1.034
+  - Non-2xx responses are more returned more correctly, albeit with empty bodies.
+  - HTTPHandler now caches the @ISA tree in RAM, offering a slight performance boost.
+  - Added missing '$r->headers_in' method to ASP4::Mock::RequestRec.
+
 2010-05-26    v1.033
   - Fixed more issues related to running multiple web applications under different
     VirutalHosts on the same server.  This time related to how Filters and Handlers
