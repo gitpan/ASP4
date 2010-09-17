@@ -80,7 +80,7 @@ sub handler : method
     if( $context->did_end && $context->did_send_headers )
     {
       $r->rflush();
-      $r->connection->client_socket->close();
+#      $r->connection->client_socket->close();
     }# end if()
     return $r->status =~ m/^2/ ? 0 : $r->status;
   }# end if()

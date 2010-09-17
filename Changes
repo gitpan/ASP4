@@ -1,4 +1,8 @@
 
+2010-09-17    v1.035
+  - It turns out that if you close the client socket, some browsers complain (Chrome).
+    Upgrade recommended.
+
 2010-09-17    v1.034
   - Non-2xx responses are more returned more correctly, albeit with empty bodies.
   - HTTPHandler now caches the @ISA tree in RAM, offering a slight performance boost.
