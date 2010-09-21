@@ -3,7 +3,7 @@ package ASP4;
 
 use strict;
 use warnings 'all';
-our $VERSION = '1.035';
+our $VERSION = '1.036';
 
 
 1;# return true:
@@ -104,7 +104,7 @@ Some URL-masking happens, so a request to C</handlers/hello.world> would go to:
     $Response->SetCookie(
       name    => "last-seen",
       value   => scalar(localtime()),
-      expires => 30 * 60 * 60 * 24, # 30 days:
+      expires => '30D',
     );
     $Response->Write("Hello World!");
   }

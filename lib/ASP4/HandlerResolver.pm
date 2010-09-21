@@ -48,7 +48,12 @@ sub resolve_request_handler
   else
   {
     my $info = ASP4::PageLoader->discover( script_name => $uri );
-    if( -f $info->{filename} )
+    if( $info->{is_static} )
+    {
+#      return unless -f $info->{filename};
+      return $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} = 'ASP4::StaticHandler';
+    }
+    elsif( -f $info->{filename} )
     {
       my $page = ASP4::PageLoader->load( script_name => $uri );
       return $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} = $page->package;
@@ -86,6 +91,7 @@ sub check_reload
   else
   {
     my $info = ASP4::PageLoader->discover( script_name => $uri );
+    return if $info->{is_static};
     return unless -f $info->{saved_to};
     $FileTimes{ "$ENV{DOCUMENT_ROOT}:$info->{filename}" } ||= 0;
     if( stat($info->{filename})->mtime > $FileTimes{ "$ENV{DOCUMENT_ROOT}:$info->{filename}" } )

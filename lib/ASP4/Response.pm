@@ -46,10 +46,33 @@ sub ContentType
 sub Expires
 {
   my $s = shift;
-  if( @_ )
+  if( my $value = shift )
   {
-    $s->{_expires} = shift;
-    $s->{_expires_absolute} = time2str( time() + ( $s->{_expires} * 60 ) );
+    my $time;
+    if( my ($num,$type) = $value =~ m/^(\-?\d+)([MHD])$/ )
+    {
+      my $expires;
+      if( $type eq 'M' ) {
+        # Minutes:
+        $expires = time() + ( $num * 60 );
+      }
+      elsif( $type eq 'H' ) {
+        # Hours:
+        $expires = time() + ( $num * 60 * 60 );
+      }
+      elsif( $type eq 'D' ) {
+        # Days:
+        $expires = time() + ( $num * 60 * 60 * 24 );
+      }# end if()
+      $time = $expires;
+    }
+    else
+    {
+      $time = $value;
+    }# end if()
+    
+    $s->{_expires} = $time;
+    $s->{_expires_absolute} = time2str( $time + ( $s->{_expires} * 60 ) );
     $s->SetHeader( expires  => $s->ExpiresAbsolute );
   }# end if()
   

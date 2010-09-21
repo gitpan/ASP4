@@ -1,4 +1,7 @@
 
+2010-09-21    v1.036
+  - Added ASP4::StaticHandler to process requests for static files - like images, css, etc.
+
 2010-09-17    v1.035
   - It turns out that if you close the client socket, some browsers complain (Chrome).
     Upgrade recommended.

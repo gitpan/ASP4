@@ -25,8 +25,9 @@ sub run_handler
   $handler_class->before_run( $s->context, $args );
   if( ! $s->{did_end} )
   {
-    $handler_class->run( $s->context, $args );
+    my $res = $handler_class->run( $s->context, $args );
     $handler_class->after_run( $s->context, $args );
+    return $res;
   }# end if()
 }# end run_handler()
 

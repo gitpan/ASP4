@@ -44,6 +44,7 @@ lib/ASP4/Server.pm
 lib/ASP4/SessionStateManager.pm
 lib/ASP4/SessionStateManager/NonPersisted.pm
 lib/ASP4/SimpleCGI.pm
+lib/ASP4/StaticHandler.pm
 lib/ASP4/Test/Fixtures.pm
 lib/ASP4/TransHandler.pm
 lib/ASP4/UserAgent.pm
@@ -98,6 +99,7 @@ t/htdocs/routing/category.asp
 t/htdocs/routing/deeply-nested.asp
 t/htdocs/routing/lang-locale-wiki.asp
 t/htdocs/seo-page/index.asp
+t/htdocs/static.txt
 t/htdocs/useragent/hello-world.asp
 t/htdocs/useragent/simple-args.asp
 t/htdocs/useragent/simple-form.asp

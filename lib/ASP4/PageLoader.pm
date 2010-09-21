@@ -24,18 +24,29 @@ sub discover
     $args{script_name} .= "/index.asp";
     $filename .= "/index.asp";
   }# end if()
-  (my $package = $args{script_name}) =~ s/[^a-z0-9]/_/ig;
-  $package = $web->application_name . '::' . $package;
   
-  (my $compiled_as = "$package.pm") =~ s/::/\//g;
-  
-  return {
-    script_name => $args{script_name},
-    'package'   => $package,
-    filename    => $filename,
-    compiled_as => $compiled_as,
-    saved_to    => $web->page_cache_root . "/$compiled_as",
-  };
+  if( $filename =~ m/\.asp$/ )
+  {
+    (my $package = $args{script_name}) =~ s/[^a-z0-9]/_/ig;
+    $package = $web->application_name . '::' . $package;
+    
+    (my $compiled_as = "$package.pm") =~ s/::/\//g;
+    
+    return {
+      script_name => $args{script_name},
+      'package'   => $package,
+      filename    => $filename,
+      compiled_as => $compiled_as,
+      saved_to    => $web->page_cache_root . "/$compiled_as",
+    };
+  }
+  else
+  {
+    return {
+      filename  => $filename,
+      is_static => 1,
+    };
+  }# end if()
 }# end discover()
 
 
