@@ -61,11 +61,32 @@ sub init_server_root
     $s->{web}->{"$key\_root"} =~ s{\\\\}{\\}g;
   }# end foreach()
   
-  mkdir( $s->{web}->{page_cache_root}, 0777 )
-    unless -d $s->{web}->{page_cache_root};
-  chmod( 0777, $s->{web}->{page_cache_root} );
-  confess "Folder '$s->{web}->{page_cache_root}' does not exist and cannot be created"
-    unless -d $s->{web}->{page_cache_root};
+  # Make sure that $s->page_cache_root exists:
+  unless( $s->{web}{page_cache_root} )
+  {
+    if( $^O =~ m{win32}i )
+    {
+      $s->{web}{page_cache_root} = "$ENV{TMP}\\PAGE_CACHE";
+    }
+    else
+    {
+      $s->{web}{page_cache_root} = "/tmp/PAGE_CACHE";
+    }# end if()
+  }# end unless()
+   
+  unless( -d $s->{web}{page_cache_root} )
+  {
+    my @parts = split /\//, $s->{web}{page_cache_root};
+    my $root = "/";
+    while( my $next = shift(@parts) )
+    {
+      $root .= "$next/";
+      mkdir($root) unless -d $root;
+      die "Cannot create path to '@{[ $s->page_cache_root ]}' - stopped at '$root': $!"
+        unless -d $root;
+      chmod(0777, $root);
+    }# end while()
+  }# end unless()
   
   (my $compiled_root = $s->{web}->{page_cache_root} . '/' . $s->{web}->{application_name}) =~ s/::/\//g;
   my $folder = "";

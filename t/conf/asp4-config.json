@@ -30,7 +30,6 @@
     "application_root": "@ServerRoot@",
     "www_root":         "@ServerRoot@/htdocs",
     "handler_root":     "@ServerRoot@/handlers",
-    "page_cache_root":  "/tmp/PAGE_CACHE",
     "handler_resolver": "ASP4::HandlerResolver",
     "handler_runner":   "ASP4::HandlerRunner",
     "filter_resolver":  "ASP4::FilterResolver",
