@@ -1,4 +1,7 @@
 
+2010-10-21    v1.038
+  - Another stab at getting http response codes right for errors.
+
 2010-09-25    v1.037
   - Added a couple tweaks here and there to make ASP4 run on Windows a little easier:
     * $Config->web->page_cache_root now does the Right Thing on linux & win32.

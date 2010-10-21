@@ -76,13 +76,15 @@ sub handler : method
     }# end if()
     warn $@ if $@;
     
-    return 500 if $@;
+#    return 500 if $@;
     if( $context->did_end && $context->did_send_headers )
     {
       $r->rflush();
 #      $r->connection->client_socket->close();
     }# end if()
-    return $r->status =~ m/^2/ ? 0 : $r->status;
+    
+return 0;
+#    return $r->status =~ m/^2/ ? 0 : $r->status;
   }# end if()
   
 }# end handler()
