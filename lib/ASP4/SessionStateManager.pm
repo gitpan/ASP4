@@ -126,6 +126,12 @@ sub create
   
   local $s->db_Session->{AutoCommit} = 1;
   my $sth = $s->db_Session->prepare_cached(<<"");
+    delete from asp_sessions
+    where session_id = ?
+
+  $sth->execute( $id );
+
+  $sth = $s->db_Session->prepare_cached(<<"");
     INSERT INTO asp_sessions (
       session_id,
       session_data,

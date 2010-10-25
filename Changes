@@ -1,4 +1,8 @@
 
+2010-10-25    v1.040
+  - 1.039 introduced a bug that could cause session-id conflicts in the asp_sessions table.
+  - This release fixes that bug.
+
 2010-10-25    v1.039
   - Session expiration now happens exclusively on the server, not as the 
     result of an expiring session cookie.
