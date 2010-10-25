@@ -77,7 +77,7 @@ sub write_session_cookie
   }# end if()
   
   my @cookie = (
-    'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain $expires"
+    'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain"
   );
   $context->headers_out->push_header( @cookie );
   @cookie;

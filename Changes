@@ -1,4 +1,8 @@
 
+2010-10-25    v1.039
+  - Session expiration now happens exclusively on the server, not as the 
+    result of an expiring session cookie.
+
 2010-10-21    v1.038
   - Another stab at getting http response codes right for errors.
 
