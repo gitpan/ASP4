@@ -95,6 +95,7 @@ t/htdocs/pageparser/has-include.asp
 t/htdocs/pageparser/has-nested-include.asp
 t/htdocs/pageparser/is-include.asp
 t/htdocs/pageparser/master.asp
+t/htdocs/register-cleanup.asp
 t/htdocs/routing/category.asp
 t/htdocs/routing/deeply-nested.asp
 t/htdocs/routing/lang-locale-wiki.asp

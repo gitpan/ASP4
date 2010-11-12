@@ -1,4 +1,10 @@
 
+2010-11-11    v1.041
+  - ASP4::UserAgent calls all cleanup handlers registered via $Server->RegisterCleanup(sub { }, @args)
+    at the end of each request, not when the ASP4::Mock::Pool object's DESTROY method is called.
+    This fixes a condition which caused conflict when a Class::DBI::Lite ORM is
+    used and the ASP4 application is executed via the `asp4` helper script.
+
 2010-10-25    v1.040
   - 1.039 introduced a bug that could cause session-id conflicts in the asp_sessions table.
   - This release fixes that bug.

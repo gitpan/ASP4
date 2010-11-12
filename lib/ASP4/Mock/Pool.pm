@@ -18,7 +18,6 @@ sub cleanup_register {
 sub DESTROY
 {
   my $s = shift;
-  $s->call_cleanup_handlers();
   undef(%$s);
 }# end DESTROY()
 

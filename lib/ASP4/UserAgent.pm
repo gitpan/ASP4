@@ -197,6 +197,8 @@ sub _setup_response
     }# end while()
   }# end foreach()
   
+  $s->context->r->pool->call_cleanup_handlers();
+  
   return $response;
 }# end _setup_response()
 
