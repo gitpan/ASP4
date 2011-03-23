@@ -1,4 +1,11 @@
 
+2011-03-23    v1.042
+  - Fixed sporadic error in master pages that looks like this:
+    Can't call method "Write" on an undefined value at /tmp/PAGE_CACHE/BStat/_masters_global_asp.pm line 1.
+  - Apparently $s->init_asp_objects($context) was not getting called before the 
+    master page's run() method was called, resulting in a call to $Response->Write(...)
+    before $Response had been initialized.
+
 2010-11-11    v1.041
   - ASP4::UserAgent calls all cleanup handlers registered via $Server->RegisterCleanup(sub { }, @args)
     at the end of each request, not when the ASP4::Mock::Pool object's DESTROY method is called.

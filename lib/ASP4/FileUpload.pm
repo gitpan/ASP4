@@ -32,20 +32,22 @@ sub UploadedFileName  { shift->{UploadedFileName} }
 sub FileExtension     { shift->{FileExtension} }
 sub FileSize          { shift->{FileSize} }
 
-sub FileContents {
+sub FileContents
+{
   my $s = shift;
   local $/;
   my $ifh = $s->FileHandle;
   return scalar(<$ifh>);
-}
+}# end FileContents()
 
-sub FileHandle {
+sub FileHandle
+{
   my $s = shift;
   my $ifh = $s->{FileHandle}; 
   seek($ifh,0,0)
     or confess "Cannot seek to the beginning of filehandle '$ifh': $!";
   return $ifh;
-}
+}# end FileHandle()
 
 
 # Public methods:

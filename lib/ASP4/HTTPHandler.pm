@@ -24,8 +24,15 @@ sub new {
 }
 
 
-sub before_run { 1; }
-sub after_run  { }
+sub before_run  { 1; }
+sub after_run   { }
+sub request     { $Request }
+sub response    { $Response }
+sub session     { $Session }
+sub stash       { $Stash }
+sub server      { $Server }
+sub form        { $Form }
+sub config      { $Config }
 
 
 sub init_asp_objects

@@ -199,6 +199,7 @@ CODE
 sub run {
 use warnings 'all';
 my (\$__self, \$__context) = \@_;
+\$__self->init_asp_objects(\$__context) unless defined(\$Response);
 #line 1
 $$ref
 }

@@ -50,7 +50,6 @@ sub resolve_request_handler
     my $info = ASP4::PageLoader->discover( script_name => $uri );
     if( $info->{is_static} )
     {
-#      return unless -f $info->{filename};
       return $HandlerCache{"$ENV{DOCUMENT_ROOT}:$uri"} = 'ASP4::StaticHandler';
     }
     elsif( -f $info->{filename} )

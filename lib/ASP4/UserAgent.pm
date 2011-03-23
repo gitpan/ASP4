@@ -26,7 +26,7 @@ sub new
 }# end new()
 
 sub context { ASP4::HTTPContext->current }
-sub config { chdir(shift->{cwd}); ASP4::ConfigLoader->load }
+sub config  { chdir(shift->{cwd}); ASP4::ConfigLoader->load }
 
 
 sub get
