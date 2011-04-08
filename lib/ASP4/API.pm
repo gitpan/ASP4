@@ -33,6 +33,7 @@ sub new
   }, $class;
 }# end new()
 
+*init = \&new;
 
 sub test_data   { shift->{test_data} }
 sub properties  { shift->{properties} }
@@ -54,7 +55,7 @@ sub DESTROY
 
 =head1 NAME
 
-ASP4::API - Your ASP4 Web App's Public API
+ASP4::API - Public Programmatic API to an ASP4 Application
 
 =head1 SYNOPSIS
 
@@ -62,14 +63,18 @@ ASP4::API - Your ASP4 Web App's Public API
   
   use strict;
   use warnings 'all';
-  use ASP4::API;
   
+  # Load up and initialize ASP4::API *before* using your app's classes:
+  use ASP4::API;
   my $api; BEGIN { $api = ASP4::API->new }
   
-  # Now you can use your other classes:
-  use My::User;
-  use My::Product;
-  use My::Foo;
+  # - or -
+  my $api; BEGIN { $api = ASP4::API->init }
+  
+  # Now you can use your app's other classes:
+  use app::user;
+  use app::product;
+  use app::order;
   
   # Use the API:
   
@@ -101,14 +106,27 @@ for the actual web pages themselves.
   use Test::More 'no_plan';
   
   use ASP4::API;
+  my $api; BEGIN { $api = ASP4::API->new }
   
   ok(
-    my $api = ASP4::API->new, "Got api"
+    $api, "Got api"
   );
   is(
     $api->ua->get('/hello.asp')->content => 'Hello World!',
     'Website is friendly'
   );
+
+=head1 CONSTRUCTOR
+
+=head2 new( )
+
+Takes no arguments.  Finds and initializes your application's configuration, which
+means that any other part of your application which requires the configuration
+to have been loaded up will now work.
+
+=head2 init( )
+
+C<init()> is simply an alias of C<new()>
 
 =head1 PUBLIC PROPERTIES
 

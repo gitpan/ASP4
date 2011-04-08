@@ -1,5 +1,6 @@
 
-package ASP4::Page;
+package
+ASP4::Page;
 
 use strict;
 use warnings 'all';

@@ -1,5 +1,6 @@
 
-package ASP4::PageLoader;
+package
+ASP4::PageLoader;
 
 use strict;
 use warnings 'all';

@@ -1,5 +1,6 @@
 
-package ASP4::ConfigFinder;
+package
+ASP4::ConfigFinder;
 
 use strict;
 use warnings 'all';

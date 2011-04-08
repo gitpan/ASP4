@@ -1,5 +1,6 @@
 
-package ASP4::FilterResolver;
+package
+ASP4::FilterResolver;
 
 use strict;
 use warnings 'all';

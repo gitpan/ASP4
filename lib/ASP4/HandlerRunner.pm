@@ -1,5 +1,6 @@
 
-package ASP4::HandlerRunner;
+package
+ASP4::HandlerRunner;
 
 use strict;
 use warnings 'all';

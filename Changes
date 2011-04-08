@@ -1,4 +1,8 @@
 
+2011-04-08
+  - Documentation overhaul.
+  
+
 2011-03-23    v1.042
   - Fixed sporadic error in master pages that looks like this:
     Can't call method "Write" on an undefined value at /tmp/PAGE_CACHE/BStat/_masters_global_asp.pm line 1.

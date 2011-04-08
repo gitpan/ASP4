@@ -1,5 +1,6 @@
 
-package ASP4::PageParser;
+package
+ASP4::PageParser;
 
 use strict;
 use warnings 'all';

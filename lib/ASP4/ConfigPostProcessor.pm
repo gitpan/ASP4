@@ -1,5 +1,6 @@
 
-package ASP4::ConfigPostProcessor;
+package
+ASP4::ConfigPostProcessor;
 
 use strict;
 use warnings 'all';

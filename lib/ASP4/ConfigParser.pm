@@ -1,5 +1,6 @@
 
-package ASP4::ConfigParser;
+package
+ASP4::ConfigParser;
 
 use strict;
 use warnings 'all';

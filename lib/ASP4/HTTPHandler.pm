@@ -1,5 +1,6 @@
 
-package ASP4::HTTPHandler;
+package
+ASP4::HTTPHandler;
 
 use strict;
 use warnings 'all';

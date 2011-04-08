@@ -1,5 +1,6 @@
 
-package ASP4::HandlerResolver;
+package
+ASP4::HandlerResolver;
 
 use strict;
 use warnings 'all';

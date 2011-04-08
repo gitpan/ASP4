@@ -1,5 +1,6 @@
 
-package ASP4::OutBuffer;
+package
+ASP4::OutBuffer;
 
 use strict;
 use warnings 'all';

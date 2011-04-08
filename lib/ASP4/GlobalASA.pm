@@ -16,11 +16,13 @@ sub Session_OnStart { }
 
 =head1 NAME
 
-ASP4::GlobalASA - Application event handler
+ASP4::GlobalASA - For reverse compatibility only.
 
 =head1 SYNOPSIS
 
-  package DefaultApp::GlobalASA;
+B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
+
+  package app::GlobalASA;
 
   use strict;
   use warnings 'all';
@@ -43,21 +45,31 @@ ASP4::GlobalASA - Application event handler
 
 =head1 DESCRIPTION
 
+B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
+
 The GlobalASA handles 3 kinds of events:
 
 =head2 Script_OnStart
+
+B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
 
 Called after all objects have been initialized, but before the request is processed by its handler (or page).
 
 =head2 Script_OnEnd
 
+B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
+
 Called at the end of a request.
 
 =head2 Session_OnStart
 
+B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
+
 Called when a session is first created.
 
 =head1 BUGS
+
+B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
 
 It's possible that some bugs have found their way into this release.
 

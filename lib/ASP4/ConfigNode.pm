@@ -1,5 +1,6 @@
 
-package ASP4::ConfigNode;
+package
+ASP4::ConfigNode;
 
 use strict;
 use warnings 'all';

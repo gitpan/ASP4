@@ -1,5 +1,6 @@
 
-package ASP4::StaticHandler;
+package
+ASP4::StaticHandler;
 
 use strict;
 use warnings 'all';
