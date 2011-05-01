@@ -82,7 +82,7 @@ sub trim_form
     $Form->{$_} =~ s/^\s+//;
     $Form->{$_} =~ s/\s+$//;
   } keys %$Form;
-}# end trim()
+}# end trim_form()
 
 
 sub _parents

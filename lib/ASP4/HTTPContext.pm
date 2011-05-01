@@ -156,7 +156,8 @@ sub execute
     {
       $s->config->load_class( $filter->class );
       $filter->class->init_asp_objects( $s );
-      my $res = $s->handle_phase(sub{ $filter->class->new()->run( $s ) });
+      my $IS_FILTER = 1;
+      my $res = $s->handle_phase(sub{ $filter->class->new()->run( $s ) }, $IS_FILTER);
       if( $s->did_end || ( defined($res) && $res != -1 ) )
       {
         return $res;
@@ -199,16 +200,32 @@ sub execute
 
 sub handle_phase
 {
-  my ($s, $ref) = @_;
+  my ($s, $ref, $is_filter) = @_;
   
-  eval { $ref->( ) };
+  my $res = eval { $ref->( ) };
   if( $@ )
   {
     $s->handle_error;
   }# end if()
   
   # Undef on success:
-  return $s->response->Status =~ m/^200/ ? undef : $s->response->Status;
+  if( $is_filter )
+  {
+    if( defined($res) && $res > -1 )
+    {
+      $s->response->Status( $res );
+      return $res;
+    }
+    else
+    {
+      return;
+    }# end if()
+  }
+  else
+  {
+    return if (! defined($res)) || $res == -1;
+    return $s->response->Status =~ m/^200/ ? undef : $s->response->Status;
+  }# end if()
 }# end handle_phase()
 
 
@@ -248,7 +265,7 @@ sub end_request
     unless $s->{did_end};
   
   $s->response->End;
-  $s->session->save;
+  $s->session->save unless $s->session->is_read_only;
   my $res = $s->response->Status =~ m/^200/ ? 0 : $s->response->Status;
   
   return $res;

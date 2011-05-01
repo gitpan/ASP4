@@ -1,7 +1,20 @@
 
-2011-04-08
+2011-05-01    v1.044
+
+[Bug Fixes]
+  - ASP4::ModPerl now does the Right Thing when a non-200 response is encountered.
+    - 500 response does not result in an "encoding error" in firefox.
+    - 200 (or 0 response) does the right thing.
+    - non-200 (and non-500) response does the right thing (eg: 401)
+  - ASP4::SessionStateManager now checks $s->is_changed *before* checking $s->{__lastMod} date
+    before deciding whether is should persist its changes in ->save().
+
+[New Features]
+  - $Session->is_read_only(1) is new.  Setting it to a true value (eg: 1) will prevent
+    the default behavior of calling $Session->save() at the end of each successful request.
+
+2011-04-08    v1.043
   - Documentation overhaul.
-  
 
 2011-03-23    v1.042
   - Fixed sporadic error in master pages that looks like this:

@@ -22,7 +22,7 @@ ASP4::GlobalASA - For reverse compatibility only.
 
 B<DEPRECATED - DO NOT USE THIS IN NEW APPLICATIONS.>
 
-  package app::GlobalASA;
+  package MyApp::GlobalASA;
 
   use strict;
   use warnings 'all';

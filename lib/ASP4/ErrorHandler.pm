@@ -16,10 +16,10 @@ sub run
   my $error = $Stash->{error};
 
   my $msg = <<"ERROR";
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE html>
 <html>
 <head><title>500 Server Error</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta charset="utf-8" />
 <style type="text/css">
 HTML,BODY {
   background-color: #FFFFFF;

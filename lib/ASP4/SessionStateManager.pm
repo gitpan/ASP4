@@ -38,6 +38,20 @@ sub new
 
 sub context { ASP4::HTTPContext->current }
 
+sub is_read_only
+{
+  my ($s, $val) = @_;
+  
+  if( defined($val) )
+  {
+    $s->{____is_read_only} = $val;
+  }
+  else
+  {
+    return $s->{____is_read_only};
+  }# end if()
+}# end is_readonly()
+
 
 sub parse_session_id
 {
@@ -222,9 +236,10 @@ sub save
 {
   my ($s) = @_;
   
+  return if $s->is_read_only;
   no warnings 'uninitialized';
   my $seconds_since_last_modified = time() - $s->{__lastMod};
-  return unless ( $seconds_since_last_modified > 60 ) || $s->is_changed;
+  return unless $s->is_changed || ( $seconds_since_last_modified > 60 );
   $s->{__lastMod} = time();
   $s->sign;
   
@@ -287,7 +302,7 @@ sub reset
 sub DESTROY
 {
   my $s = shift;
-  $s->save;
+  $s->save unless $s->is_read_only;
   undef(%$s);
 }# end DESTROY()
 
@@ -312,11 +327,24 @@ it is saved to the database (or whatever).
 
 If no changes were made to the session, it is not saved.
 
+=head1 PUBLIC PROPERTIES
+
+=head2 is_read_only( 1:0 )
+
+Starting with version 1.044, setting this property to a true value will prevent
+any changes made to the contents of the session during the current request from
+being saved at the end of the request.
+
+B<NOTE:> A side-effect is that calling C<< $Session->save() >> after calling C<< $Session->is_read_only(1) >>
+will B<*NOT*> prevent changes from being saved B<ON PURPOSE>.  Explicitly calling C<< $Session->save() >>
+will still cause the session data to be stored.  Setting C<< $Session->is_read_only(1) >> will only
+prevent the default behavior of saving session state at the end of each successful request.
+
 =head1 PUBLIC METHODS
 
 =head2 save( )
 
-Causes the session data to be saved.
+Causes the session data to be saved. (Unless C<< $Session->is_read_only(1) >> is set.)
 
 =head2 reset( )
 

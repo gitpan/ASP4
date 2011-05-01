@@ -76,12 +76,25 @@ sub handler : method
     }# end if()
     warn $@ if $@;
     
-    if( $context->did_end && $context->did_send_headers )
-    {
-      $r->rflush();
-    }# end if()
     
-    return 0;
+    if( $context->response->Status == 200 )
+    {
+      $r->status( 200 );
+      if( $context->did_end && $context->did_send_headers )
+      {
+        $r->rflush();
+      }# end if()
+      return 0;
+    }
+    else
+    {
+      $r->status( $context->response->Status );
+      if( $context->did_end && $context->did_send_headers )
+      {
+        $r->rflush();
+      }# end if()
+      return $context->response->Status == 500 ? 0 : $context->response->Status;
+    }# end if()
   }# end if()
   
 }# end handler()
