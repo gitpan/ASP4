@@ -1,4 +1,8 @@
 
+2011-05-03    v1.046
+[Bug Fixes]
+  - $Response->Redirect(...) wasn't returning '301' - now it does.
+
 2011-05-03    v1.045
 [Bug Fixes]
   - Actually it turned out that setting $Session->is_read_only(1) *DID* prevent
