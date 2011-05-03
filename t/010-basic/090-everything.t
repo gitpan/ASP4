@@ -47,14 +47,4 @@ is(
   like $res->status_line, qr{^404}, "Status looks like a 404 error";
 }
 
-# read-only session:
-{
-  $api->context->session->is_read_only(1);
-  $api->context->session->{foo} = 'bar';
-  my $date = $api->context->session->{__lastMod};
-  sleep(3);
-  $api->context->session->save;
-  is $api->context->session->{__lastMod} => $date, "session.__lastMod was not changed (therefore not saved)";
-}
-
 

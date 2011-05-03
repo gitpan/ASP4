@@ -1,4 +1,9 @@
 
+2011-05-03    v1.045
+[Bug Fixes]
+  - Actually it turned out that setting $Session->is_read_only(1) *DID* prevent
+    $Session->save() from working.  This is now fixed to match the documentation.
+
 2011-05-01    v1.044
 
 [Bug Fixes]

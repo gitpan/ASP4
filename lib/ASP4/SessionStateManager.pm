@@ -236,7 +236,6 @@ sub save
 {
   my ($s) = @_;
   
-  return if $s->is_read_only;
   no warnings 'uninitialized';
   my $seconds_since_last_modified = time() - $s->{__lastMod};
   return unless $s->is_changed || ( $seconds_since_last_modified > 60 );
