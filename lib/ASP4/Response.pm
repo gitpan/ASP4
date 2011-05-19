@@ -72,7 +72,7 @@ sub Expires
     }# end if()
     
     $s->{_expires} = $time;
-    $s->{_expires_absolute} = time2str( $time + ( $s->{_expires} * 60 ) );
+    $s->{_expires_absolute} = time2str( $time );
     $s->SetHeader( expires  => $s->ExpiresAbsolute );
   }# end if()
   
@@ -281,6 +281,16 @@ ASP4::Response - Interface to the outgoing HTTP response
   $Response->AddHeader( 'x-awesomeness' => '100%' );
   
   $Response->SetHeader( 'x-velocity'  => '100MPH' );
+  
+  # Expires in the future:
+  $Response->Expires( '30M' );  # 30 minutes from now
+  $Response->Expires( '30H' );  # 30 hours from  now
+  $Response->Expires( '30D' );  # 30 days from now
+  
+  # Expires in the past:
+  $Response->Expires( '-30M' ); # 30 minutes ago
+  $Response->Expires( '-30H' ); # 30 hours ago
+  $Response->Expires( '-30D' ); # 30 days ago
   
   $Response->SetCookie(
     # Required parameters:

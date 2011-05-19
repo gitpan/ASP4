@@ -1,4 +1,9 @@
 
+2011-05-19    v1.047
+[Bug Fixes]
+  - $Response->Expires("30M") wasn't documented.  Now it is.
+  - $Response->Expires wasn't working properly.  Now it is. (Always ended up with pre-epoch expiration times).
+
 2011-05-03    v1.046
 [Bug Fixes]
   - $Response->Redirect(...) wasn't returning '301' - now it does.

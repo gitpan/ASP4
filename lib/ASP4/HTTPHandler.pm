@@ -91,7 +91,10 @@ sub _parents
   
   no strict 'refs';
   
-  if( @{"$class\::__PARENTS"} )
+  ${"$class\::__PARENTS_TIME"} ||= 0;
+  my $diff = time() - ${"$class\::__PARENTS_TIME"};
+  my $max_age = 5;
+  if( @{"$class\::__PARENTS"} && $diff < $max_age )
   {
     return @{"$class\::__PARENTS"};
   }# end if()
@@ -103,6 +106,7 @@ sub _parents
                    grep { ( ! $saw{$_}++ ) && $_->isa($pkg) }
                      @{"$class\::ISA"};
   
+  ${"$class\::__PARENTS_TIME"} = time();
   return @{"$class\::__PARENTS"} = @classes;
 }# end _parents()
 

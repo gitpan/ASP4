@@ -61,7 +61,7 @@ sub handler : method
       warn $@;
       $r->status( 500 );
     }# end if()
-    return $r->status =~ m/^2/ ? 0 : $r->status;
+    return $r->status =~ m/^2/ ? 0 : $r->status == 500 ? 0 : $r->status;
   }
   else
   {
