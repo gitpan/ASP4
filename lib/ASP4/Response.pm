@@ -94,7 +94,15 @@ sub Status
 sub End
 {
   my $s = shift;
-  $s->Flush;
+  
+  if( $s->Status =~ m{^2} )
+  {
+    $s->Flush;
+  }
+  else
+  {
+    delete $s->context->headers_out->{'content-type'};
+  }# end if()
   
   # Would be nice to somehow stop all execution:
   $s->context->did_end( 1 );

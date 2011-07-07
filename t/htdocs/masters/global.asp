@@ -1,4 +1,4 @@
-<%@ MasterPage %><html>
+<%@ MasterPage %><asp:ContentPlaceHolder id="init"></asp:ContentPlaceHolder><html>
   <head>
     <title>
       <asp:ContentPlaceHolder id="meta_title">Default Title</asp:ContentPlaceHolder>

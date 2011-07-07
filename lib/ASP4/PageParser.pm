@@ -120,7 +120,7 @@ sub parse
     my ($contents) = $$ref =~ m{$start(.*?)$end}s;
 
     $tag->{contents} = "\$Response->Write(q~$contents~);";
-    $$ref =~ s{$start\Q$contents\E$end}{\~); \$__self->$tag->{id}(\$__context); \$Response->Write(q\~}s;
+    $$ref =~ s{$start\Q$contents\E$end}{\~); \$__self->$tag->{id}(\$__context); if( \$__context->did_end() ){\$__context->response->Clear(); return; } \$Response->Write(q\~}s;
   }# end foreach()
   
   # The <asp:Content PlaceHolderID="...">...</asp:Content> tags:
@@ -164,7 +164,7 @@ sub parse
     my ($contents) = $$ref =~ m{$start(.*?)$end}s;
 
     $tag->{contents} = "\$Response->Write(q~$contents~);";
-    $$ref =~ s{$start\Q$contents\E$end}{\~); \$__self->$tag->{id}(\$__context); \$Response->Write(q\~}s;
+    $$ref =~ s{$start\Q$contents\E$end}{\~); \$__self->$tag->{id}(\$__context); if( \$__context->did_end() ){\$__context->response->Clear(); return; } \$Response->Write(q\~}s;
   }# end foreach()
   
   my $code = <<"CODE";
@@ -213,6 +213,7 @@ CODE
 
 sub $_->{id} {
 my (\$__self, \$__context) = \@_;
+if( \$__context->did_end() ){\$__context->response->Clear(); return; }
 #line $_->{line}
 $_->{contents}
 }# end $_->{id}

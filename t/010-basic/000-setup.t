@@ -21,6 +21,10 @@ my $dbh = DBI->connect("DBI:SQLite:dbname=$dbfile", "", "", {
   RaiseError => 1,
 });
 
+$dbh->do(<<"SQL");
+drop table if exists asp_sessions
+SQL
+
 my $ok = $dbh->do(<<"SQL");
 create table asp_sessions (
   session_id    char(32) not null primary key,

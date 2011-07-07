@@ -1,4 +1,12 @@
 
+2011-07-07    v1.048
+[Bug Fixes]
+  - <% $Response->Status(404); return $Response->End; %> DID NOT WORK.
+    Instead it continued processing other ContentPlaceHolders.  Now we check
+    to see if $Response->End was called before we process anything else.
+  - Still getting some "Content encoding error" messages from FF/Chrome/MSIE but
+    we're almost there.
+
 2011-05-19    v1.047
 [Bug Fixes]
   - $Response->Expires("30M") wasn't documented.  Now it is.

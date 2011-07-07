@@ -127,6 +127,7 @@ sub send_headers
   my $headers = $s->headers_out;
   while( my ($k,$v) = each(%$headers) )
   {
+    next if lc($k) eq 'set-cookie';
     $s->r->err_headers_out->{$k} = $v;
   }# end while()
 

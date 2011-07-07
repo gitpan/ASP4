@@ -228,7 +228,7 @@ sub _setup_cgi
   }# end unless()
   
   # User-Agent:
-  $req->header( 'User-Agent' => 'test-useragent v1.0' );
+  $req->header( 'User-Agent' => 'test-useragent v2.0' );
   $ENV{HTTP_USER_AGENT} = 'test-useragent v2.0';
   
   # Cookies:
