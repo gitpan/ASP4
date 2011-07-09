@@ -1,4 +1,9 @@
 
+2011-07-09
+[Bug Fixes]
+  - v1.048 broke session cookies.
+  - Upgrade to v1.049 (quick).
+
 2011-07-07    v1.048
 [Bug Fixes]
   - <% $Response->Status(404); return $Response->End; %> DID NOT WORK.
