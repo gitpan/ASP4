@@ -256,6 +256,7 @@ sub _subrequest
   $s->Flush;
   my $buffer = $s->context->purge_buffer();
   $s->context->{r} = $original_r;
+  $s->context->did_end( 0 );
   return $r->buffer;
 }# end _subrequest()
 

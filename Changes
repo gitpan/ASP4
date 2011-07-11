@@ -1,5 +1,12 @@
 
-2011-07-09
+2011-07-11    v1.050
+[Bug Fixes]
+  - v1.049 Caused script execution to cease after any $Response->Include or ssi
+    include finished.
+  - Upgrade required if you know what's good for you.
+
+
+2011-07-09    v1.049
 [Bug Fixes]
   - v1.048 broke session cookies.
   - Upgrade to v1.049 (quick).
