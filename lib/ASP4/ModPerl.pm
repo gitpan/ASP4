@@ -92,6 +92,13 @@ sub handler : method
       if( $context->did_end && $context->did_send_headers )
       {
         $r->rflush();
+      }
+      else
+      {
+        # Make sure we send our headers now, since we haven't done so already:
+        $context->send_headers();
+        $context->did_end(1);
+        $r->rflush();
       }# end if()
       return $context->response->Status == 500 ? 0 : $context->response->Status;
     }# end if()

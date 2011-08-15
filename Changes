@@ -1,4 +1,14 @@
 
+2011-08-14    1.051
+[Bug Fixes]
+  - 'Redirect Loop' fixed!  Under mod_perl, $context->send_headers() was not 
+    called for non-200 http responses.
+    Now it is.
+    This means that if you had `return $Response->Redirect("/foo/")` in a RequestFilter
+    you may have gotten a "redirect loop" because although the '301 Moved' status
+    was set, the `location: /foo/` header was *not* set.  This would result in
+    a redirect loop.
+
 2011-07-11    v1.050
 [Bug Fixes]
   - v1.049 Caused script execution to cease after any $Response->Include or ssi

@@ -28,7 +28,7 @@ requires    'HTTP::Body'              => 0;
 requires    'JSON::XS'                => 0;       # For Configs
 requires    'Term::ReadKey'           => 0;       # For asphelper script.
 
-recommends  'Router::Generic'         => 0.011;   # For routing.
+recommends  'ASP4x::Router'           => 0.020;   # For routing.
 
 install_script 'sbin/asp4';
 install_script 'sbin/asphelper';

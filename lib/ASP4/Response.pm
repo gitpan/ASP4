@@ -211,7 +211,7 @@ sub Redirect
   
   $s->Clear;
   $s->Status( 301 );
-  $s->AddHeader( Location => $url );
+  $s->SetHeader( Location => $url );
   $s->End;
   return $s->Status;
 }# end Redirect()
