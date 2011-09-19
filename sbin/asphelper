@@ -197,14 +197,15 @@ eval {
 if( $dbName && $Class::DBI::Lite::VERSION )
 {
   make_path("$domain/lib/$appName");
-  unless( -f "$domain/lib/$appName/Model.pm" )
+  make_path("$domain/lib/$appName/db");
+  unless( -f "$domain/lib/$appName/db/model.pm" )
   {
-    warn "$domain/lib/$appName/Model.pm\n";
-    open my $ofh, '>', "$domain/lib/$appName/Model.pm"
-      or die "Cannot open '$domain/lib/$appName/Model.pm' for writing: $!";
+    warn "$domain/lib/$appName/db/model.pm\n";
+    open my $ofh, '>', "$domain/lib/$appName/db/model.pm"
+      or die "Cannot open '$domain/lib/$appName/db/model.pm' for writing: $!";
     print $ofh <<"CODE";
 
-@{[ 'package' ]} @{['']} $appName\::Model;
+@{[ 'package' ]} @{['']} $appName\::db::model;
 
 use strict;
 use warnings 'all';
@@ -225,17 +226,17 @@ __PACKAGE__->connection(
 
 \=head1 NAME
 
-$appName\::Model - Base class for all $appName entity classes.
+$appName\::db::model - Base class for all $appName entity classes.
 
 \=head1 SYNOPSIS
 
   # In your class:
   
-  package $appName\::Thing;
+  package $appName\::db::thing;
   
   use strict;
   use warnings 'all';
-  use base '$appName\::Model';
+  use base '$appName\::db::model';
   
   __PACKAGE__->set_up_table('things');
   
@@ -274,8 +275,16 @@ use Test::More 'no_plan';
 use ASP4::API;
 my \$api; BEGIN { \$api = ASP4::API->new }
 
+TEST
 
-@{[ $dbName ? qq(use_ok('$appName\::Model');) : '' ]}
+  if( $CDBIL_Version )
+  {
+print $ofh <<"MORE";
+@{[ $dbName ? qq(use_ok('$appName\::db::model');) : '' ]}
+MORE
+  }# end if()
+  
+  print $ofh <<"TEST";
 
 my \$res = \$api->ua->post("/handlers/$hClass.echo", {
   hello => "world"
@@ -383,6 +392,8 @@ sub generic_config
     "filter_resolver":  "ASP4::FilterResolver",
     "request_filters": [
     ],
+    "routes": [
+    ],
     "disable_persistence": [
     ]
   },
@@ -396,7 +407,7 @@ EOF
       "manager":          "ASP4::SessionStateManager",
       "cookie_name":      "session-id",
       "cookie_domain":    "*",
-      "session_timeout":  30,
+      "session_timeout":  "*",
       "dsn":              "DBI:mysql:%dbName%:%dbHost%",
       "username":         "%dbUser%",
       "password":         "%dbPass%"
@@ -415,7 +426,7 @@ EOF
       "manager":          "ASP4::SessionStateManager::NonPersisted",
       "cookie_name":      "session-id",
       "cookie_domain":    "*",
-      "session_timeout":  30,
+      "session_timeout":  "*",
       "dsn":              "DBI:mysql:dbname:hostname",
       "username":         "admin",
       "password":         "swordfish"
@@ -460,7 +471,7 @@ PerlModule ASP4::ModPerl
     PerlResponseHandler ASP4::ModPerl
   </Files>
   
-  # !IMPORTANT! Prevent anyone from viewing your GlobalASA.pm
+  # !IMPORTANT! Prevent anyone from viewing your *.pm files:
   <Files ~ (\.pm$)>
     Order allow,deny
     Deny from all
@@ -507,13 +518,14 @@ Use the resulting application as a starting-point for your own development.
   |   |-- asp4-config.json
   |   `-- httpd.conf
   |-- handlers
-  |   `-- example
+  |   `-- myapp
   |       `-- echo.pm
   |-- htdocs
   |   `-- index.asp
   |-- lib
-  |   `-- Example
-  |       `-- Model.pm
+  |   `-- MyApp
+  |       `-- db
+  |           `-- model.pm
   |-- sbin
   |   `-- ddl.sql
   `-- t
