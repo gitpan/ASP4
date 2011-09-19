@@ -1,4 +1,10 @@
 
+2011-09-09    1.052
+[Bug Fixes]
+  - Blank lines in asp4-config.json no longer causes an exception to be thrown.
+  - Update documentation to reflect preference change from app::* to App::db::*
+    root namespace for database classes.
+
 2011-08-14    1.051
 [Bug Fixes]
   - 'Redirect Loop' fixed!  Under mod_perl, $context->send_headers() was not 

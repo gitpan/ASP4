@@ -25,7 +25,7 @@ sub load
   
   open my $ifh, '<', $path
     or die "Cannot open '$path' for reading: $!";
-  local $/ = '';
+  local $/;# = '';
   my $doc = JSON::XS->new->decode( scalar(<$ifh>) );
   close($ifh);
   

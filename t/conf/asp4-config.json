@@ -10,6 +10,7 @@
       "DBI",
       "DBD::SQLite"
     ],
+    
     "env_vars": {
       "myvar":        "Some-Value",
       "another_var":  "Another Value"

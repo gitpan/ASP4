@@ -3,7 +3,7 @@ package ASP4;
 
 use strict;
 use warnings 'all';
-our $VERSION = '1.051';
+our $VERSION = '1.052';
 
 
 1;# return true:
@@ -319,11 +319,11 @@ Suppose you had the following tables in your database:
   ) engine=innodb charset=utf8;
 
 B<NOTE:> It's best to assign every ASP4 application its own namespace.  For this
-example the namespace is C<app::>
+example the namespace is C<App::db::>
 
-Create the file C<lib/app/model.pm> and add the following lines:
+Create the file C<lib/App::db/model.pm> and add the following lines:
 
-  package app::model;
+  package App::db::model;
   
   use strict;
   use warnings 'all';
@@ -347,13 +347,13 @@ Create the file C<lib/app/model.pm> and add the following lines:
 
 Add the following C<Class::DBI::Lite> entity classes:
 
-C<lib/app/user.pm>
+C<lib/App/db/user.pm>
 
-  package app::user;
+  package App::db::user;
   
   use strict;
   use warnings 'all';
-  use base 'app::model';
+  use base 'App::db::model';
   use Digest::MD5 'md5_hex';
   use ASP4::ConfigLoader;
   
@@ -361,13 +361,13 @@ C<lib/app/user.pm>
   
   __PACKAGE__->has_many(
     messages_in =>
-      'MyApp::message'  =>
+      'App::db::message'  =>
         'to_user_id'
   );
   
   __PACKAGE__->has_many(
     messages_out  =>
-      'app::message'  =>
+      'App::db::message'  =>
         'from_user_id'
   );
   
@@ -412,25 +412,25 @@ C<lib/app/user.pm>
   
   1;# return true:
 
-C<lib/app/message.pm>
+C<lib/App/db/message.pm>
 
-  package app::message;
+  package App::db::message;
   
   use strict;
   use warnings 'all';
-  use base 'app::model';
+  use base 'App::db::model';
   
   __PACKAGE__->set_up_table('messages');
   
   __PACKAGE__->belongs_to(
     sender  =>
-      'app::user' =>
+      'App::db::user' =>
         'from_user_id'
   );
   
   __PACKAGE__->belongs_to(
     recipient =>
-      'app::user' =>
+      'App::db::user' =>
         'to_user_id'
   );
   
@@ -508,7 +508,7 @@ File: C<handlers/app/register.pm>
   use warnings 'all';
   use base 'ASP4::FormHandler';
   use vars __PACKAGE__->VARS; # Import $Response, $Form, $Session, etc
-  use app::user;
+  use App::db::user;
   
   sub run {
     my ($self, $context) = @_;
@@ -523,8 +523,8 @@ File: C<handlers/app/register.pm>
     
     # Create the user:
     my $user = eval {
-      app::user->do_transaction(sub {
-        return MyApp::user->create(
+      App::db::user->do_transaction(sub {
+        return App::db::user->create(
           email     => $Form->{email},
           password  => $Form->{password},
         );
@@ -589,7 +589,7 @@ File: C<handlers/app/register.pm>
     return $errors if keys %$errors;
     
     # See if the user already exists:
-    if( app::user->count_search( email => $Form->{email} ) ) {
+    if( App::db::user->count_search( email => $Form->{email} ) ) {
       $errors->{email} = "Already in use";
     }
     
@@ -618,8 +618,8 @@ File: C<htdocs/profile.asp>
   
   <%
     # Get our $user:
-    use app::user;
-    my $user = app::user->retrieve( $Session->{user_id} );
+    use App::db::user;
+    my $user = App::db::user->retrieve( $Session->{user_id} );
   %>
   
   <div style="float: left; width: 40%; border-right: solid 1px #000;">
@@ -644,7 +644,7 @@ File: C<htdocs/profile.asp>
         <label>Recipient:</label>
         <select name="to_user_id">
   <%
-    my @users = app::user->search_where({
+    my @users = App::db::user->search_where({
       user_id => {'!=' => $user->id }
     }, {
       order_by => "email"
@@ -682,16 +682,16 @@ File: C<handlers/app/send.pm>
   use warnings 'all';
   use base 'ASP4::FormHandler';
   use vars __PACKAGE__->VARS;
-  use app::user;
-  use app::message;
+  use App::db::user;
+  use App::db::message;
   
   sub run {
     my ($self, $context) = @_;
     
     # Create the message:
     my $msg = eval {
-      app::message->do_transaction(sub {
-        my $msg = app::message->create(
+      App::db::message->do_transaction(sub {
+        my $msg = App::db::message->create(
           from_user_id  => $Session->{user_id},
           to_user_id    => $Form->{to_user_id},
           subject       => $Form->{subject},
