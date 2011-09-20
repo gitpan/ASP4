@@ -43,21 +43,29 @@ sub init_server_root
 {
   my ($s, $root) = @_;
   
+  my $appRoot = (sub{
+    my @parts = split /\//, $root;
+    pop(@parts);
+    join '/', @parts;
+  })->();
   no warnings 'uninitialized';
   foreach( @{ $s->{system}->{libs} } )
   {
     $_ =~ s/\@ServerRoot\@/$root/;
+    $_ =~ s/\@AppRoot\@/$appRoot/;
   }# end foreach()
   
   my $settings = $s->{system}->{settings};
   foreach( keys %$settings )
   {
     $settings->{$_} =~ s/\@ServerRoot\@/$root/;
+    $settings->{$_} =~ s/\@AppRoot\@/$appRoot/;
   }# end foreach()
   
   foreach my $key (qw/ application handler www page_cache /)
   {
     $s->{web}->{"$key\_root"} =~ s/\@ServerRoot\@/$root/;
+    $s->{web}->{"$key\_root"} =~ s/\@AppRoot\@/$appRoot/;
     $s->{web}->{"$key\_root"} =~ s{\\\\}{\\}g;
   }# end foreach()
   
@@ -174,7 +182,8 @@ Here is an example:
         
       ],
       "libs": [
-        "@ServerRoot@/lib"
+        "@ServerRoot@/lib",
+        "@AppRoot@/lib"
       ],
       "load_modules": [
         "DBI",

@@ -1,4 +1,11 @@
 
+2011-09-20    1.054
+  - Added @AppRoot@ macro for asp4-config.json.  It is 1 folder "up" from @ServerRoot@.
+  - If your @ServerRoot@ is:
+      /home/bart/Projects/facebook/www
+    Then your @AppRoot@ is:
+      /home/bart/Projects/facebook
+
 2011-09-19    1.053
   - Updated asphelper script to genenrate sample app conforming to new App::db::*
     root namespace.
