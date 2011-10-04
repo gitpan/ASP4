@@ -1,5 +1,6 @@
 
-package ASP4::SessionStateManager::NonPersisted;
+package
+ASP4::SessionStateManager::NonPersisted;
 
 use strict;
 use warnings 'all';

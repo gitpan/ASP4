@@ -43,7 +43,7 @@ sub init_server_root
 {
   my ($s, $root) = @_;
   
-  my $appRoot = (sub{
+  my $project_root = (sub{
     my @parts = split /\//, $root;
     pop(@parts);
     join '/', @parts;
@@ -52,20 +52,20 @@ sub init_server_root
   foreach( @{ $s->{system}->{libs} } )
   {
     $_ =~ s/\@ServerRoot\@/$root/;
-    $_ =~ s/\@AppRoot\@/$appRoot/;
+    $_ =~ s/\@ProjectRoot\@/$project_root/;
   }# end foreach()
   
   my $settings = $s->{system}->{settings};
   foreach( keys %$settings )
   {
     $settings->{$_} =~ s/\@ServerRoot\@/$root/;
-    $settings->{$_} =~ s/\@AppRoot\@/$appRoot/;
+    $settings->{$_} =~ s/\@ProjectRoot\@/$project_root/;
   }# end foreach()
   
   foreach my $key (qw/ application handler www page_cache /)
   {
     $s->{web}->{"$key\_root"} =~ s/\@ServerRoot\@/$root/;
-    $s->{web}->{"$key\_root"} =~ s/\@AppRoot\@/$appRoot/;
+    $s->{web}->{"$key\_root"} =~ s/\@ProjectRoot\@/$project_root/;
     $s->{web}->{"$key\_root"} =~ s{\\\\}{\\}g;
   }# end foreach()
   
@@ -183,7 +183,7 @@ Here is an example:
       ],
       "libs": [
         "@ServerRoot@/lib",
-        "@AppRoot@/lib"
+        "@ProjectRoot@/lib"
       ],
       "load_modules": [
         "DBI",

@@ -1,5 +1,6 @@
 
-package ASP4::Test::Fixtures;
+package
+ASP4::Test::Fixtures;
 
 use strict;
 use warnings 'all';

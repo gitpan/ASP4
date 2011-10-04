@@ -3,6 +3,11 @@
   - Consider using Mo for all OOP.
 
 [CHANGELOG]
+
+2011-10-04    1.057
+  - Renamed @AppRoot@ macro to @ProjectRoot@ to avoid confusion with $Config->web->application_root
+  - Adjusted package declarations in some "stealth-mode" pm files because they have no POD yet.
+
 2011-10-03    1.056
   - Updated asphelper to include directives that disable mod_deflate and Apache2::Reload
     for ASP4 websites. RayBaksh++

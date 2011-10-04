@@ -1,5 +1,6 @@
 
-package ASP4::SessionStateManager::InMemory;
+package
+ASP4::SessionStateManager::InMemory;
 
 use strict;
 use warnings 'all';
