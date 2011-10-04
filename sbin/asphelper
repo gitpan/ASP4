@@ -456,6 +456,10 @@ PerlModule DBI
 PerlModule DBD::mysql
 PerlModule ASP4::ModPerl
 
+# Apache2::Reload does not play well with ASP4.
+# Uncomment the following line if you get Apache2::Reload errors:
+#PerlSetVar ReloadAll Off
+
 # Admin website:
 <VirtualHost *:80>
 
@@ -469,6 +473,7 @@ PerlModule ASP4::ModPerl
   <Files ~ (\.asp$)>
     SetHandler  perl-script
     PerlResponseHandler ASP4::ModPerl
+    SetEnv no-gzip dont-vary
   </Files>
   
   # !IMPORTANT! Prevent anyone from viewing your *.pm files:
@@ -481,6 +486,7 @@ PerlModule ASP4::ModPerl
   <Location /handlers>
     SetHandler  perl-script
     PerlResponseHandler ASP4::ModPerl
+    SetEnv no-gzip dont-vary
   </Location>
   
 </VirtualHost>

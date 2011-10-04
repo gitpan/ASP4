@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               ASP4
-version:            1.055
+version:            1.056
 abstract:           Fast, Simple, Scalable Web Development
 author:
     - John Drago <jdrago_999@yahoo.com>
@@ -9,7 +9,7 @@ distribution_type:  module
 test_requires:
     Test::More:           0
     Test::Memory::Cycle:  0
-    DBD::SQLite:          0
+#    DBD::SQLite:          0
     Time::HiRes:          0
     HTML::Form:           0
 requires:

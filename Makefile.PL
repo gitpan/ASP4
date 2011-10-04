@@ -10,7 +10,7 @@ all_from 'lib/ASP4.pm';
 
 test_requires 'Test::More'          => 0;
 test_requires 'Test::Memory::Cycle' => 0;
-test_requires 'DBD::SQLite'         => 0;
+#test_requires 'DBD::SQLite'         => 0;
 test_requires 'Time::HiRes'         => 0;
 test_requires 'HTML::Form'          => 0;
 

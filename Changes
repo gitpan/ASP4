@@ -1,4 +1,15 @@
 
+[TODO]
+  - Consider using Mo for all OOP.
+
+[CHANGELOG]
+2011-10-03    1.056
+  - Updated asphelper to include directives that disable mod_deflate and Apache2::Reload
+    for ASP4 websites. RayBaksh++
+  - This fixes the dreaded "This website uses an invalid form of compression" error
+    that you may have gotten after trying to $Response->Status(404) within an asp script.
+  - Added in-memory mock sessionstate handler for faster testing and easier installation.
+
 2011-09-22    1.055
   - Giving credit where credit is due :-)
   - Erikdj++

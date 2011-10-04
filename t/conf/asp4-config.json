@@ -65,7 +65,7 @@
   },
   "data_connections": {
     "session": {
-      "manager":          "ASP4::SessionStateManager",
+      "manager":          "ASP4::SessionStateManager::InMemory",
       "cookie_name":      "session-id",
       "cookie_domain":    "*",
       "session_timeout":  "*",

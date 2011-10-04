@@ -43,6 +43,8 @@ lib/ASP4/Response.pm
 lib/ASP4/Server.pm
 lib/ASP4/SessionStateManager.pm
 lib/ASP4/SessionStateManager/NonPersisted.pm
+lib/ASP4/SessionStateManager/InMemory.pm
+lib/ASP4/SessionStateManager/Memcached.pm
 lib/ASP4/SimpleCGI.pm
 lib/ASP4/StaticHandler.pm
 lib/ASP4/Test/Fixtures.pm
