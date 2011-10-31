@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings 'all';
+use ASP4::API;
+use HTTP::Date 'time2iso';
+my $api; BEGIN { $api = ASP4::API->new }
+
+(my $export_root = time2iso()) =~ s{\s+}{_};
+$export_root =~ s{:}{.}g;
+chdir("/tmp");
+
+my $root = $api->config->web->project_root;
+(my $appName = $api->config->web->application_name) =~ s{::}{_}g;
+`svn export $root "$appName\_$export_root" && tar -cz "$appName\_$export_root" > "$appName\_$export_root.tar.gz" && mv "$appName\_$export_root.tar.gz" $root`;
+print "$root/$appName\_$export_root.tar.gz\n";
+

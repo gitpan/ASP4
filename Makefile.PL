@@ -31,6 +31,8 @@ requires    'Term::ReadKey'           => 0;       # For asphelper script.
 recommends  'ASP4x::Router'           => 0.020;   # For routing.
 
 install_script 'sbin/asp4';
+install_script 'sbin/asp4-prep';
+install_script 'sbin/asp4-deploy';
 install_script 'sbin/asphelper';
 
 tests_recursive();

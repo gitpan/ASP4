@@ -68,6 +68,15 @@ sub init_server_root
     $s->{web}->{"$key\_root"} =~ s/\@ProjectRoot\@/$project_root/;
     $s->{web}->{"$key\_root"} =~ s{\\\\}{\\}g;
   }# end foreach()
+  $s->{web}->{project_root} = $project_root;
+  
+  # Just in case we're dealing with a file-based db like SQLite:
+  foreach my $key (qw/ session main /)
+  {
+    $s->{data_connections}->{$key}->{dsn} =~ s/\@ServerRoot\@/$root/;
+    $s->{data_connections}->{$key}->{dsn} =~ s/\@ProjectRoot\@/$project_root/;
+    $s->{data_connections}->{$key}->{dsn} =~ s{\\\\}{\\}g;
+  }# end foreach()
   
   # Make sure that $s->page_cache_root exists:
   unless( $s->{web}{page_cache_root} )
@@ -155,6 +164,7 @@ ASP4::Config - Central configuration for ASP4
   # Web:
   $Config->web->application_name;
   $Config->web->application_root;
+  $Config->web->project_root;
   $Config->web->www_root;
   $Config->web->handler_root;
   $Config->web->media_manager_upload_root;

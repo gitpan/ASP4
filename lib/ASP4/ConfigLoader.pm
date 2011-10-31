@@ -6,7 +6,7 @@ use warnings 'all';
 use Carp 'confess';
 use ASP4::ConfigFinder;
 use ASP4::ConfigParser;
-use JSON::XS ();
+use JSON::XS;
 
 our $Configs = { };
 
@@ -26,7 +26,7 @@ sub load
   open my $ifh, '<', $path
     or die "Cannot open '$path' for reading: $!";
   local $/;
-  my $doc = JSON::XS->new->decode( scalar(<$ifh>) );
+  my $doc = decode_json( scalar(<$ifh>) );
   close($ifh);
   
   (my $where = $path) =~ s/\/conf\/[^\/]+$//;

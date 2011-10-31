@@ -1,8 +1,21 @@
 
 [TODO]
   - Consider using Mo for all OOP.
+  - Convert internal representation of http request and response to PSGI.
 
 [CHANGELOG]
+
+2011-10-31    1.058
+  - Added experimental deployment tools `asp4-prep` and `asp4-deploy`.
+    * asp4-prep does an `svn export` and then gzips the folder and prints the *.tar.gz filename.
+    * asp4-deploy decompresses the *.tar.gz, creates a symbolic link 'deploying'
+      to the new folder, copies the existing config files from latest/*/conf/* 
+      (if it exists) or copies conf/*.template config files and renames them without
+      the *.template suffix.  If a 'latest/*' folder was found, asp4-deploy will
+      run any unit tests found.  If all tests pass, then 'deploying' is removed
+      and 'latest' is changed to point to the new folder.
+  - TODO: Add POD for asp4-prep and asp4-deploy.  This is delayed until it's proven
+    that this is the correct way for onesie-twosie deployments.
 
 2011-10-04    1.057
   - Renamed @AppRoot@ macro to @ProjectRoot@ to avoid confusion with $Config->web->application_root

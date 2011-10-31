@@ -1,0 +1,74 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings 'all';
+use Getopt::Long;
+use Test::Harness;
+use Cwd 'cwd';
+
+my $res = GetOptions(
+  "src=s"     => \my $src,
+  "target=s"  => \my $target
+);
+
+$src or die "Usage: $0 --src=</path/to/MyApp_2011-11-29_12.03.34.tar.gz> [--target=/var/www/appname/]\n";
+
+my $start_cwd = cwd();
+
+my ($id) = $src =~ m{\b/?([^/]+?\d\d\d\d\-\d\d\-\d\d_\d\d\.\d\d\.\d\d)\.tar\.gz$}
+  or die "Invalid --src: '$src' does not match the standard filename.\n";
+if( $target )
+{
+  -d $target && chdir($target)
+    or die "Invalid --target: '$target': $!\n";
+}# end if()
+
+if( -d 'latest' )
+{
+  `rm -f deploying`;
+  
+  # Copy over the config files:
+  `tar -zxvf "$src" && ln -s "$id" deploying`;
+  my @test_errors = ( );
+  foreach( grep { $_ !~ m{latest/common$} } <latest/*> )
+  {
+    my ($folder) = $_ =~ m{latest/([^/]+)};
+    `cp -rf latest/$folder/conf/* deploying/$folder/conf/`;
+    chdir("deploying/$folder");
+    unless( eval { runtests( <t/*/*.t> ) } ) #/
+    {
+      push @test_errors, $@;
+    }# end unless()
+  }# end foreach()
+  chdir($start_cwd);
+  
+  if( @test_errors )
+  {
+    die "Tests failed:\n", join "\n", @test_errors;
+  }# end if()
+  
+  `rm -rf latest`;
+  `rm -rf deploying`;
+  `ln -s "$id" latest`;
+}
+else
+{
+  `tar -zxvf "$src" && ln -s "$id" latest`;
+  my @to_update = ( );
+  my @files = qw( asp4-config.json httpd.conf );
+  foreach( grep { $_ !~ m{latest/common$} } <latest/*> )
+  {
+    my ($folder) = $_ =~ m{latest/([^/]+)};
+    foreach my $file ( @files )
+    {
+      if( (stat("latest/$folder/conf/$file.template"))[7]  )
+      {
+        `cp latest/$folder/conf/$file.template latest/$folder/conf/$file`;
+        push @to_update, "latest/$folder/conf/$file";
+      }# end if()
+    }# end foreach()
+  }# end foreach()
+  warn "\n\n***You must update the following configuration files:***\n";
+  warn join( "\n", map {"\t* $_"} @to_update), "\n\n";
+}# end if()
+
