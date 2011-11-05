@@ -5,6 +5,22 @@
 
 [CHANGELOG]
 
+2011-11-05    1.059
+  - ASP4::API:
+    - No longer have to do this:
+      use ASP4::API;
+      my $api; BEGIN { $api = ASP4::API->new }
+      # Now load classes:
+      use MyApp::Foo;
+    - You can do this instead:
+      use ASP4::API;
+      use MyApp::Foo;
+      my $api = ASP4::API->new;
+    - Also no need for BEGIN { ASP4::API->init }
+  - Added requirement Data::Properties::JSON.
+    - JSON is a better format for test fixtures.
+    - YAML can still be used.
+
 2011-10-31    1.058
   - Added experimental deployment tools `asp4-prep` and `asp4-deploy`.
     * asp4-prep does an `svn export` and then gzips the folder and prints the *.tar.gz filename.

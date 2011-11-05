@@ -5,7 +5,7 @@ use warnings 'all';
 use Test::More 'no_plan';
 use ASP4::API;
 
-my $api; BEGIN { $api = ASP4::API->new }
+my $api = ASP4::API->new;
 
 ok( my $res = $api->ua->get('/everything/step01.asp'), "Got res");
 

@@ -6,8 +6,8 @@ use warnings 'all';
 use ASP4::ConfigLoader;
 use ASP4::HTTPContext;
 use ASP4::UserAgent;
-use Data::Properties::YAML;
 use ASP4::Test::Fixtures;
+BEGIN { ASP4::ConfigLoader->load }
 
 sub new
 {
@@ -16,9 +16,20 @@ sub new
   my $config = ASP4::ConfigLoader->load;
   
   # Our test fixtures:
-  my $test_data = ASP4::Test::Fixtures->new(
-    properties_file => $config->web->application_root . '/etc/test_fixtures.yaml'
-  ) if -f $config->web->application_root . '/etc/test_fixtures.yaml';
+  my $test_data;
+  if( -f $config->web->application_root . '/etc/test_fixtures.json' )
+  {
+    eval { require Data::Properties::JSON };
+    $test_data = Data::Properties::JSON->new(
+      properties_file => $config->web->application_root . '/etc/test_fixtures.json'
+    ) unless $@;
+  }
+  elsif( -f $config->web->application_root . '/etc/test_fixtures.yaml' )
+  {
+    $test_data = ASP4::Test::Fixtures->new(
+      properties_file => $config->web->application_root . '/etc/test_fixtures.yaml'
+    );
+  }# end if()
   
   # Our diagnostic messages:
   my $properties = Data::Properties::YAML->new(
@@ -26,22 +37,22 @@ sub new
   ) if -f $config->web->application_root . '/etc/properties.yaml';
   
   return bless {
-    test_data   => $test_data,
-    properties  => $properties,
-    ua          => ASP4::UserAgent->new(),
-    config      => $config,
+    test_fixtures => $test_data,
+    properties    => $properties,
+    ua            => ASP4::UserAgent->new(),
+    config        => $config,
   }, $class;
 }# end new()
 
 *init = \&new;
 
-sub test_data   { shift->{test_data} }
+sub test_fixtures   { shift->{test_fixtures} }
 sub properties  { shift->{properties} }
 sub ua          { shift->{ua} }
 sub context     { ASP4::HTTPContext->current }
 sub config      { shift->{config} }
-sub data        { shift->test_data }    # Deprecated! - for Apache2::ASP compat only.
-
+sub data        { shift->test_fixtures }    # XXX: Deprecated! - for Apache2::ASP compat only.
+sub test_data   { shift->test_fixtures }    # XXX: Deprecated!
 
 sub DESTROY
 {
@@ -66,18 +77,17 @@ ASP4::API - Public Programmatic API to an ASP4 Application
   
   # Load up and initialize ASP4::API *before* using your app's classes:
   use ASP4::API;
-  my $api; BEGIN { $api = ASP4::API->new }
   
-  # - or -
-  my $api; BEGIN { $api = ASP4::API->init }
-  
-  # Now you can use your app's other classes:
+  # *Now* you can use your app's other classes:
+  # because the environment has been initialized (@INC, %ENV, etc):
   use app::user;
   use app::product;
   use app::order;
   
-  # Use the API:
+  # Create an api object:
+  my $api = ASP4::API->new;
   
+  # Use the API:
   my $res = $api->ua->get('/index.asp');
   if( $res->is_success ) {
     print $res->content;

@@ -76,6 +76,7 @@ t/conf/asp4-config.json
 t/conf/httpd.conf
 t/etc/properties.yaml
 t/etc/test_fixtures.yaml
+t/etc/test_fixtures.json
 t/handlers/dev/headers.pm
 t/handlers/dev/seo_handler.pm
 t/handlers/dev/simple.pm

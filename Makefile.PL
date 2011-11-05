@@ -16,6 +16,7 @@ test_requires 'HTML::Form'          => 0;
 
 requires    'common::sense'           => 0;
 requires    'Data::Properties::YAML'  => 0;
+requires    'Data::Properties::JSON'  => 0;
 requires    'Cwd'                     => 0;
 requires    'Digest::MD5'             => 0;       # Session state.
 requires    'DBI'                     => 0;       # Session state.
