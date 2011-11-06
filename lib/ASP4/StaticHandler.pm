@@ -11,9 +11,11 @@ sub run
 {
   my ($s, $context) = @_;
   
-  my ($uri) = split /\?/, $ENV{REQUEST_URI};
-  my $file = $Server->MapPath( $uri );
-  unless( -f $file )
+  my $file = $ENV{SCRIPT_FILENAME} ?
+               $ENV{SCRIPT_FILENAME} :
+                 $Server->MapPath( (split /\?/, $ENV{REQUEST_URI})[0] );
+  
+  unless( $file && -f $file )
   {
     $Response->Status( 404 );
     $Response->End;
@@ -26,8 +28,8 @@ sub run
   
   my ($ext) = $file =~ m{\.([^\.]+)$};
   my %types = (
-    swf => 'application/x-shockwave-flash',
-    xml => 'text/xml'
+    swf   => 'application/x-shockwave-flash',
+    xml   => 'text/xml',
   );
   my $type = $types{lc($ext)} || 'application/octet-stream';
   $Response->ContentType( $type );

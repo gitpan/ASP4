@@ -249,11 +249,12 @@ sub _subrequest
     args  => $original_r->args,
   );
   local $ENV{SCRIPT_NAME} = $uri;
-#  local $ENV{REQUEST_URI} = $uri;
   local $ENV{SCRIPT_FILENAME} = $file;
+  my $original_status = $s->Status();
   $s->context->setup_request( $r, $s->context->cgi );
   $s->context->execute( $args, 1 );
   $s->Flush;
+  $s->Status( $original_status );
   my $buffer = $s->context->purge_buffer();
   $s->context->{r} = $original_r;
   $s->context->did_end( 0 );

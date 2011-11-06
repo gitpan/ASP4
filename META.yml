@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               ASP4
-version:            1.059
+version:            1.060
 abstract:           Fast, Simple, Scalable Web Development
 author:
     - John Drago <jdrago_999@yahoo.com>

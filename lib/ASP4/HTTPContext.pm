@@ -184,6 +184,7 @@ sub execute
     $s->config->load_class( $s->handler );
     $s->config->web->handler_runner->new()->run_handler( $s->handler, $args );
   };
+  
   if( $@ )
   {
     $s->server->{LastError} = $@;

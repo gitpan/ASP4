@@ -71,6 +71,7 @@ t/010-basic/080-cleanup-handlers.t
 t/010-basic/090-everything.t
 t/020-bench/010-hello.t
 t/030-filters/010-seo.t
+t/040-round2/010-include-missing.t
 t/999-finish/000-cleanup.t
 t/conf/asp4-config.json
 t/conf/httpd.conf
@@ -86,6 +87,7 @@ t/htdocs/everything/master.asp
 t/htdocs/everything/step01.asp
 t/htdocs/GlobalASA.pm
 t/htdocs/index.asp
+t/htdocs/include-missing.asp
 t/htdocs/masters/deep.asp
 t/htdocs/masters/global.asp
 t/htdocs/masters/submaster.asp
