@@ -5,6 +5,9 @@
 
 [CHANGELOG]
 
+2011-11-07    1.061
+  - asphelper now creates new ASP4 apps using the proper structure.
+
 2011-11-06    1.060
   - $Response->Include on a missing file will no longer result in a 404 on the
     calling file.  This goes for $Response->TrapInclude as well as <!-- #include virtual="..." -->

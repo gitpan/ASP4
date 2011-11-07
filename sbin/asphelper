@@ -21,7 +21,6 @@ my (
   $email,
 );
 
-my $cwd = cwd();
 
 my $result = GetOptions(
   "app=s"     => \$appName, # Required
@@ -60,13 +59,28 @@ if( $@ )
   die "[ERROR]: $error\n";
 }# end if()
 
+# Setup folder structure:
+(my $project_path = lc($appName)) =~ s{::}{_}sg;
+make_path($project_path);
+chdir($project_path);
+my $cwd = cwd();
+my $appFolder = join( '/',  split(/::/, $appName) );
+make_path("common/lib/$appFolder/db");
+make_path("common/sbin");
+make_path('www/t/010-basic');
+make_path('www/conf');
+make_path('www/etc');
+make_path('www/htdocs');
+make_path('www/handlers');
+
+
+
 # Write the ddl.sql file:
-make_path("$domain/sbin");
-unless( -f "$domain/sbin/ddl.sql" )
+unless( -f "common/sbin/ddl.sql" )
 {
-  warn "$domain/sbin/ddl.sql\n";
-  open my $ofh, '>', "$domain/sbin/ddl.sql"
-    or die "Cannot open '$domain/sbin/ddl.sql' for writing: $!";
+  warn "common/sbin/ddl.sql\n";
+  open my $ofh, '>', "common/sbin/ddl.sql"
+    or die "Cannot open 'common/sbin/ddl.sql' for writing: $!";
   print $ofh <<"SQL";
 
 drop table if exists asp_sessions;
@@ -80,8 +94,8 @@ create table asp_sessions (
 
 SQL
   close($ofh);
-  open my $ifh, "$domain/sbin/ddl.sql"
-    or die "Cannot open '$domain/sbin/ddl.sql' for reading: $!";
+  open my $ifh, "common/sbin/ddl.sql"
+    or die "Cannot open 'common/sbin/ddl.sql' for reading: $!";
   local $/ = ';';
   while( my $cmd = <$ifh> )
   {
@@ -95,12 +109,11 @@ SQL
 
 
 # Write our configs:
-make_path("$domain/conf");
-unless( -f "$domain/conf/asp4-config.json" )
+unless( -f "www/conf/asp4-config.json" )
 {
-  warn "$domain/conf/asp4-config.json\n";
-  open my $ofh, '>', "$domain/conf/asp4-config.json"
-    or die "Cannot open '$domain/conf/asp4-config.json' for writing: $!";
+  warn "www/conf/asp4-config.json\n";
+  open my $ofh, '>', "www/conf/asp4-config.json"
+    or die "Cannot open 'www/conf/asp4-config.json' for writing: $!";
   my $json = generic_config( $dbName && $dbUser );
   $json =~ s/\%CWD\%/$cwd/igs;
   $json =~ s/\%domain\%/$domain/igs;
@@ -115,11 +128,11 @@ unless( -f "$domain/conf/asp4-config.json" )
 }# end unless()
 
 
-unless( -f "$domain/conf/httpd.conf" )
+unless( -f "www/conf/httpd.conf" )
 {
-  warn "$domain/conf/httpd.conf\n";
-  open my $ofh, '>', "$domain/conf/httpd.conf"
-    or die "Cannot open '$domain/conf/httpd.conf' for writing: $!";
+  warn "www/conf/httpd.conf\n";
+  open my $ofh, '>', "www/conf/httpd.conf"
+    or die "Cannot open 'www/conf/httpd.conf' for writing: $!";
   my $conf = generic_httpconf();
   $conf =~ s/\%CWD\%/$cwd/igs;
   $conf =~ s/\%domain\%/$domain/igs;
@@ -135,12 +148,12 @@ unless( -f "$domain/conf/httpd.conf" )
 
 
 # Test page:
-make_path("$domain/htdocs");
-unless( -f "$domain/htdocs/index.asp" )
+make_path("www/htdocs");
+unless( -f "www/htdocs/index.asp" )
 {
-  warn "$domain/htdocs/index.asp\n";
-  open my $ofh, '>', "$domain/htdocs/index.asp"
-    or die "Cannot open '$domain/htdocs/index.asp' for writing: $!";
+  warn "www/htdocs/index.asp\n";
+  open my $ofh, '>', "www/htdocs/index.asp"
+    or die "Cannot open 'www/htdocs/index.asp' for writing: $!";
   print $ofh <<'ASP';
 <html>
 <body>
@@ -160,14 +173,14 @@ ASP
 
 (my $hPath = lc($appName)) =~ s/::/\//g;
 my $hClass = lc($appName);
-make_path("$domain/handlers/$hPath");
-unless( -f "$domain/handlers/$hClass/echo.pm" )
+make_path("www/handlers/$hPath/www");
+unless( -f "www/handlers/$hClass/www/echo.pm" )
 {
-  open my $ofh, '>', "$domain/handlers/$hPath/echo.pm"
-    or die "Cannot open '$domain/handlers/$hPath/echo.pm' for writing: $!";
+  open my $ofh, '>', "www/handlers/$hPath/www/echo.pm"
+    or die "Cannot open 'www/handlers/$hPath/www/echo.pm' for writing: $!";
   print $ofh <<"CODE";
 
-package $hClass\::echo;
+package $hClass\::www::echo;
 
 use strict;
 use warnings 'all';
@@ -196,16 +209,14 @@ eval {
 };
 if( $dbName && $Class::DBI::Lite::VERSION )
 {
-  make_path("$domain/lib/$appName");
-  make_path("$domain/lib/$appName/db");
-  unless( -f "$domain/lib/$appName/db/model.pm" )
+  unless( -f "common/lib/$appFolder/db/model.pm" )
   {
-    warn "$domain/lib/$appName/db/model.pm\n";
-    open my $ofh, '>', "$domain/lib/$appName/db/model.pm"
-      or die "Cannot open '$domain/lib/$appName/db/model.pm' for writing: $!";
+    warn "common/lib/$appFolder/db/model.pm\n";
+    open my $ofh, '>', "common/lib/$appFolder/db/model.pm"
+      or die "Cannot open 'common/lib/$appFolder/db/model.pm' for writing: $!";
     print $ofh <<"CODE";
 
-@{[ 'package' ]} @{['']} $appName\::db::model;
+@{[ 'package' ]} @{['']} $appFolder\::db::model;
 
 use strict;
 use warnings 'all';
@@ -260,12 +271,11 @@ CODE
 }# end if()
 
 
-unless( -d "$domain/t" )
+unless( -f "www/t/010-basic/010-compile.t" )
 {
-  warn "$domain/t/010-basic/010-compile.t\n";
-  make_path("$domain/t/010-basic");
-  open my $ofh, '>', "$domain/t/010-basic/010-compile.t"
-    or die "Cannot open '$domain/t/010-basic/010-compile.t' for writing: $!";
+  warn "www/t/010-basic/010-compile.t\n";
+  open my $ofh, '>', "www/t/010-basic/010-compile.t"
+    or die "Cannot open 'www/t/010-basic/010-compile.t' for writing: $!";
   print $ofh <<"TEST";
 #!/usr/bin/perl -w
 
@@ -273,7 +283,7 @@ use strict;
 use warnings 'all';
 use Test::More 'no_plan';
 use ASP4::API;
-my \$api; BEGIN { \$api = ASP4::API->new }
+my \$api = ASP4::API->new;
 
 TEST
 
@@ -286,10 +296,10 @@ MORE
   
   print $ofh <<"TEST";
 
-my \$res = \$api->ua->post("/handlers/$hClass.echo", {
+my \$res = \$api->ua->post("/handlers/$hClass.www.echo", {
   hello => "world"
 });
-like \$res->content, qr('hello'\\s+\\=\>\\s+'world'), "/handlers/$hClass.echo?hello=world works";
+like \$res->content, qr('hello'\\s+\\=\>\\s+'world'), "/handlers/$hClass.www.echo?hello=world works";
 
 ok( \$res = \$api->ua->get("/"), "Got '/'.");
 ok( \$res->is_success, "GET / is successful.");
@@ -322,7 +332,7 @@ TEST
 warn "="x60, "\n";
 warn "    Running Initial Test Suite...\n";
 warn "="x60, "\n";
-chdir($domain);
+chdir("www");
 `asp4 /` =~ m{You have visited this page}
   or die "Warning: ASP script contents (/index.asp) not what we expected!";
 system("prove -rv t");
@@ -332,7 +342,7 @@ warn <<"END";
 
 !!!!!!!!!!!!!!!!!!!!!! CONGRATULATIONS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 *** Update your Apache Config ***
-  Include $cwd/$domain/conf/httpd.conf
+  Include $cwd/www/conf/httpd.conf
 
 *** Add This to your /etc/hosts File ***
   127.0.0.1     $domain
@@ -346,11 +356,11 @@ warn <<"END";
   Navigate to http://$domain
 
 *** To Run the Unit Tests ***
-  cd $cwd/$domain
+  cd $cwd/www
   prove -rv t
 
 *** To Run an ASP Script From the Command Line ***
-  cd $cwd/$domain
+  cd $cwd/www
   asp4 /index.asp
 
 END
@@ -366,7 +376,8 @@ sub generic_config
     "post_processors": [
     ],
     "libs": [
-      "@ServerRoot@/lib"
+      "@ServerRoot@/lib",
+      "@ProjectRoot@/common/lib"
     ],
     "load_modules": [
     ],
@@ -519,24 +530,35 @@ including config files, full directory structure and a simple unit test.
 
 Use the resulting application as a starting-point for your own development.
 
-  example.com/
-  |-- conf
-  |   |-- asp4-config.json
-  |   `-- httpd.conf
-  |-- handlers
-  |   `-- myapp
-  |       `-- echo.pm
-  |-- htdocs
-  |   `-- index.asp
-  |-- lib
-  |   `-- MyApp
-  |       `-- db
-  |           `-- model.pm
-  |-- sbin
-  |   `-- ddl.sql
-  `-- t
-      `-- 010-basic
-          `-- 010-compile.t
+If executed with the following arguments:
+
+  asphelper --app=Foo --domain=www.foo.local --email=foo@bar.com --host=localhost --db=foo --user=root
+
+You will get an application matching what is listed below:
+
+  .
+    `-- foo
+        |-- common
+        |   |-- lib
+        |   |   `-- Foo
+        |   |       `-- db
+        |   |           `-- model.pm
+        |   `-- sbin
+        |       `-- ddl.sql
+        `-- www
+            |-- conf
+            |   |-- asp4-config.json
+            |   `-- httpd.conf
+            |-- etc
+            |-- handlers
+            |   `-- foo
+            |       `-- www
+            |           `-- echo.pm
+            |-- htdocs
+            |   `-- index.asp
+            `-- t
+                `-- 010-basic
+                    `-- 010-compile.t
 
 B<NOTE:> If L<Class::DBI::Lite> is installed, a base Model class will be created based on
 L<Class::DBI::Lite>.  See L<Class::DBI::Lite> for details on how to use it.

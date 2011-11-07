@@ -3,7 +3,7 @@ package ASP4;
 
 use strict;
 use warnings 'all';
-our $VERSION = '1.060';
+our $VERSION = '1.061';
 
 
 1;# return true:
