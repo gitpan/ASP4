@@ -166,6 +166,8 @@ sub _setup_response
   
   $response_code = 200 if $response_code eq '0';
   my $response = HTTP::Response->new( $response_code );
+  
+  # XXX: Sometimes this dies with 'HTTP::Message requires bytes' or similar:
   $response->content( $s->context->r->buffer );
   
   $response->header( 'Content-Type' => $s->context->response->{ContentType} );

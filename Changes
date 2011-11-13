@@ -5,6 +5,9 @@
 
 [CHANGELOG]
 
+2011-11-13    1.062
+  - The httpd.conf produced by asphelper had an incorrect DocumentRoot.  Fixed now.
+
 2011-11-07    1.061
   - asphelper now creates new ASP4 apps using the proper structure.
 

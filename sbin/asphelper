@@ -83,14 +83,16 @@ unless( -f "common/sbin/ddl.sql" )
     or die "Cannot open 'common/sbin/ddl.sql' for writing: $!";
   print $ofh <<"SQL";
 
+set foreign_key_checks = 0;
 drop table if exists asp_sessions;
+set foreign_key_checks = 1;
 
 create table asp_sessions (
   session_id   char(32) not null primary key,
   session_data blob,
   created_on   datetime default null,
   modified_on  datetime default null
-) engine=myisam;
+) engine=innodb charset=utf8;
 
 SQL
   close($ofh);
@@ -475,7 +477,7 @@ PerlModule ASP4::ModPerl
 <VirtualHost *:80>
 
   ServerName    %domain%
-  DocumentRoot  %CWD%/%domain%/htdocs
+  DocumentRoot  %CWD%/www/htdocs
   
   # Set the directory index:
   DirectoryIndex index.asp
