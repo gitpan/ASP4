@@ -4,6 +4,7 @@ package ASP4::Server;
 use strict;
 use warnings 'all';
 use ASP4::HTTPContext;
+use ASP4::Error;
 use Mail::Sendmail;
 
 sub new
@@ -77,6 +78,22 @@ sub RegisterCleanup
   
   $s->context->r->pool->cleanup_register( $sub, \@args );
 }# end RegisterCleanup()
+
+
+sub Error
+{
+  my $s = shift;
+  
+  my $error = ref($_[0]) && $_[0]->isa('ASP4::Error') ? $_[0] : ASP4::Error->new( @_ );
+
+  $s->context->stash->{error} = $error;
+  $s->context->config->load_class( $s->context->config->errors->error_handler );
+  my $error_handler = $s->context->config->errors->error_handler->new();
+  $error_handler->init_asp_objects( $s->context );
+  $error_handler->run( $s->context );
+  return $error;
+}# end Error()
+
 
 1;# return true:
 

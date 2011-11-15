@@ -5,6 +5,13 @@
 
 [CHANGELOG]
 
+2011-11-15    1.063
+  - Stealth-mode ASP4::ErrorHandler::Remote will send your error messages to a
+    remote server via http.
+  - Added ASP4::Error
+  - Refactored ASP4::ErrorHandler to be more easily sub-classable.
+  - GlobalASA is now officially removed.
+
 2011-11-13    1.062
   - The httpd.conf produced by asphelper had an incorrect DocumentRoot.  Fixed now.
 

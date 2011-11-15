@@ -14,6 +14,49 @@ sub run
   my ($s, $context) = @_;
   
   my $error = $Stash->{error};
+  $s->print_error( $error );
+  $s->send_error( $error );
+}# end run()
+
+
+sub print_error
+{
+  my ($s, $error) = @_;
+  
+  $Response->ContentType('text/html');
+
+  if( $ENV{HTTP_HOST} eq 'localhost' )
+  {
+    $Response->Write( Dumper(\%$error) );
+  }
+  else
+  {
+    $Response->Write( $s->error_html( $error ) );
+  }# end if()
+  
+  $Response->Flush;
+}# end print_error()
+
+
+sub send_error
+{
+  my ($s, $error) = @_;
+  
+  $Server->Mail(
+    To                          => $Config->errors->mail_errors_to,
+    From                        => $Config->errors->mail_errors_from,
+    Subject                     => "ASP4: Error in @{[ $ENV{HTTP_HOST} ]}@{[ $context->r->uri ]}",
+    'content-type'              => 'text/html',
+    'content-transfer-encoding' => 'base64',
+    Message                     => encode_base64( $s->error_html($error) ),
+    smtp                        => $Config->errors->smtp_server,
+  );
+}# end send_error()
+
+
+sub error_html
+{
+  my ($s, $error) = @_;
 
   my $msg = <<"ERROR";
 <!DOCTYPE html>
@@ -64,17 +107,17 @@ PRE {
 </style>
 <body>
 <h1>500 Server Error</h1>
-<h2>@{[ $error->{title} ]}</h2>
-<div><div class="label">URL:</div> <div class="info"><code>@{[ $ENV{HTTP_HOST} ]}@{[ $context->r->uri ]}</code></div></div>
+<h2>@{[ $error->message ]}</h2>
+<div><div class="label">URL:</div> <div class="info"><code>@{[ $ENV{HTTP_HOST} ]}@{[ $ENV{REQUEST_URI} ]}</code></div></div>
 <div class="clear"></div>
-<div><div class="label">File:</div> <div class="info"><code>@{[ $error->{file} ]}</code></div></div>
+<div><div class="label">File:</div> <div class="info"><code>@{[ $error->file ]}</code></div></div>
 <div class="clear"></div>
-<div><div class="label">Line:</div> <div class="info">@{[ $error->{line} ]}</div></div>
+<div><div class="label">Line:</div> <div class="info">@{[ $error->line ]}</div></div>
 <div class="clear"></div>
 <div><div class="label">Time:</div> <div class="info">@{[ HTTP::Date::time2iso() ]}</div></div>
 <div class="clear"></div>
 <h2>Stacktrace follows below:</h2>
-<div class="code"><pre>@{[ $error->{stacktrace} ]}</pre></div>
+<div class="code"><pre>@{[ $error->stacktrace ]}</pre></div>
 <div class="clear"></div>
 <h3>\%ENV</h3>
 <div class="code"><pre>
@@ -91,19 +134,9 @@ REMOTE_ADDR:      '@{[ $Server->HTMLEncode($ENV{REMOTE_ADDR}) ]}'
 </html>
 ERROR
   
-  $Response->Write( $msg );
-  $Response->Flush;
-  $Server->Mail(
-    To                          => $Config->errors->mail_errors_to,
-    From                        => $Config->errors->mail_errors_from,
-    Subject                     => "ASP4: Error in @{[ $ENV{HTTP_HOST} ]}@{[ $context->r->uri ]}",
-    'content-type'              => 'text/html',
-    'content-transfer-encoding' => 'base64',
-    Message                     => encode_base64( $msg ),
-    smtp                        => $Config->errors->smtp_server,
-  );
+  return $msg;
+}# end error_html()
 
-}# end run()
 
 1;# return true:
 
@@ -154,18 +187,29 @@ To subclass C<ASP4::ErrorHandler> you must do the following:
     
     my $error = $Stash->{error};
     
-    # $error looks like this:
-    $VAR1 = {
-      title       => 'Cannot call execute with a reference',
-      file        => '/tmp/PAGE_CACHE/mysite/index_asp.pm',
-      line        => 45,
-      stacktrace  => # Output from Carp::confess,
-    };
+    # $error is an ASP4::Error object.
   
     # Do something here about the error.
+    $s->print_error( $error );
+    $s->send_error( $error );
   }
   
   1;# return true:
+
+=head1 METHODS
+
+=head2 error_html( $error )
+
+Returns a string of html suitable for printing to the browser or emailing.
+
+=head2 print_error( $error )
+
+Prints the error html to the browser.
+
+=head2 send_error( $error )
+
+Sends the error html to the email address specified in the config, using C<<$Server->Mail(...)>>
+and the smtp server specified in the config.
 
 =head1 BUGS
 

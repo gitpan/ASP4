@@ -11,6 +11,7 @@ use ASP4::Response;
 use ASP4::Server;
 use ASP4::OutBuffer;
 use ASP4::SessionStateManager::NonPersisted;
+use Carp 'confess';
 
 use vars '$_instance';
 
@@ -60,19 +61,20 @@ sub setup_request
     $do_session_onstart++;
   }# end if()
   
-  $s->{global_asa} = $s->resolve_global_asa_class( );
-  {
-    no warnings 'uninitialized';
-    $s->{global_asa}->init_asp_objects( $s );
-    if( $do_session_onstart )
-    {
-      unless( $s->session->{__started} )
-      {
-        $s->handle_phase( $s->global_asa->can('Session_OnStart') );
-        $s->session->{__started} = 1;
-      }# end unless()
-    }# end if()
-  }
+# XXX: GlobalASA is removed in v1.063
+#  $s->{global_asa} = $s->resolve_global_asa_class( );
+#  {
+#    no warnings 'uninitialized';
+#    $s->{global_asa}->init_asp_objects( $s );
+#    if( $do_session_onstart )
+#    {
+#      unless( $s->session->{__started} )
+#      {
+#        $s->handle_phase( $s->global_asa->can('Session_OnStart') );
+#        $s->session->{__started} = 1;
+#      }# end unless()
+#    }# end if()
+#  }
   
   return $_instance;
 }# end setup_request()
@@ -90,7 +92,8 @@ sub stash     { shift->{stash} }
 # More advanced:
 sub cgi         { shift->{cgi} }
 sub r           { shift->{r} }
-sub global_asa  { shift->{global_asa} }
+# XXX: GlobalASA is removed in v1.063
+#sub global_asa  { return; shift->{global_asa} }
 sub handler     { shift->{handler} }
 sub headers_out { shift->{headers_out} }
 sub content_type  { my $s = shift; $s->r->content_type( @_ ) }
@@ -164,8 +167,9 @@ sub execute
       }# end if()
     }# end foreach()
     
-    my $start_res = $s->handle_phase( $s->global_asa->can('Script_OnStart') );
-    return $start_res if $s->did_end || defined( $start_res );
+# XXX: GlobalASA is removed in v1.063
+#    my $start_res = $s->handle_phase( $s->global_asa->can('Script_OnStart') );
+#    return $start_res if $s->did_end || defined( $start_res );
   }# end unless()
   
   eval {
@@ -234,25 +238,10 @@ sub handle_error
 {
   my $s = shift;
   
-  my $error = "$@";
   $s->response->Status( 500 );
-  no strict 'refs';
-
-  $s->response->Clear;
-  my ($main, $title, $file, $line) = $error =~ m/^((.*?)\s(?:at|in)\s(.*?)\sline\s(\d+))/;
-  $s->stash->{error} = {
-    title       => $title,
-    file        => $file,
-    line        => $line,
-    stacktrace  => $error,
-  };
-  warn "[Error: @{[ HTTP::Date::time2iso() ]}] @{[ $main || $error ]}\n";
-  
-  $s->config->load_class( $s->config->errors->error_handler );
-  my $error_handler = $s->config->errors->error_handler->new();
-  $error_handler->init_asp_objects( $s );
-  eval { $error_handler->run( $s ) };
-  confess $@ if $@;
+  $s->response->Clear();
+  my $error = $s->server->Error( $@ );
+  warn "[Error: @{[ HTTP::Date::time2iso() ]}] @{[ $error->message ]}\n";
   
   return $s->end_request;
 }# end handle_error()
@@ -262,8 +251,9 @@ sub end_request
 {
   my $s = shift;
   
-  $s->handle_phase( $s->global_asa->can('Script_OnEnd') )
-    unless $s->{did_end};
+# XXX: GlobalASA is removed in v1.063
+#  $s->handle_phase( $s->global_asa->can('Script_OnEnd') )
+#    unless $s->{did_end};
   
   $s->response->End;
   $s->session->save unless $s->session->is_read_only;
@@ -273,26 +263,27 @@ sub end_request
 }# end end_request()
 
 
-sub resolve_global_asa_class
-{
-  my $s = shift;
-  
-  my $file = $s->config->web->www_root . '/GlobalASA.pm';
-  my $class;
-  if( -f $file )
-  {
-    $class = $s->config->web->application_name . '::GlobalASA';
-    eval { require $file };
-    confess $@ if $@;
-  }
-  else
-  {
-    $class = 'ASP4::GlobalASA';
-    $s->config->load_class( $class );
-  }# end if()
-  
-  return $class;
-}# end resolve_global_asa_class()
+# XXX: GlobalASA is removed in v1.063
+#sub resolve_global_asa_class
+#{
+#  my $s = shift;
+#  
+#  my $file = $s->config->web->www_root . '/GlobalASA.pm';
+#  my $class;
+#  if( -f $file )
+#  {
+#    $class = $s->config->web->application_name . '::GlobalASA';
+#    eval { require $file };
+#    confess $@ if $@;
+#  }
+#  else
+#  {
+#    $class = 'ASP4::GlobalASA';
+#    $s->config->load_class( $class );
+#  }# end if()
+#  
+#  return $class;
+#}# end resolve_global_asa_class()
 
 
 sub do_disable_session_state

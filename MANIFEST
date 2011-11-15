@@ -18,7 +18,9 @@ lib/ASP4/ConfigNode/System.pm
 lib/ASP4/ConfigNode/Web.pm
 lib/ASP4/ConfigParser.pm
 lib/ASP4/ConfigPostProcessor.pm
+lib/ASP4/Error.pm
 lib/ASP4/ErrorHandler.pm
+lib/ASP4/ErrorHandler/Remote.pm
 lib/ASP4/FileUpload.pm
 lib/ASP4/FilterResolver.pm
 lib/ASP4/FormHandler.pm

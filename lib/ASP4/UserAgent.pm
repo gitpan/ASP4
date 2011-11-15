@@ -168,7 +168,12 @@ sub _setup_response
   my $response = HTTP::Response->new( $response_code );
   
   # XXX: Sometimes this dies with 'HTTP::Message requires bytes' or similar:
-  $response->content( $s->context->r->buffer );
+  eval { $response->content( $s->context->r->buffer ) };
+  if( $@ )
+  {
+    (my $ascii = $s->context->r->buffer) =~ s/[^[:ascii:]]//gs;
+    $response->content( $ascii );
+  }# end if()
   
   $response->header( 'Content-Type' => $s->context->response->{ContentType} );
   
@@ -226,6 +231,11 @@ sub _setup_cgi
   unless( $req->uri =~ m@^/handlers@ )
   {
     $ENV{SCRIPT_FILENAME} = $s->config->web->www_root . $uri_no_args;
+    if( -d $ENV{SCRIPT_FILENAME} )
+    {
+      $ENV{SCRIPT_FILENAME} =~ s{/$}{};
+      $ENV{SCRIPT_FILENAME} .= "/index.asp";
+    }# end if()
     $ENV{SCRIPT_NAME} = $uri_no_args;
   }# end unless()
   
