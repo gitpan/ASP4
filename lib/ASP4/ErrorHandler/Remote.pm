@@ -31,7 +31,8 @@ sub send_error
   
   $ua ||= LWP::UserAgent->new();
   $ua->agent( ref($s) . " $ASP4::VERSION" );
-  my $req = POST $Config->errors->post_errors_to, { %$error };
+  my %clone = %$error;
+  my $req = POST $Config->errors->post_errors_to, \%clone;
   $ua->request( $req );
 }# end send_error()
 
@@ -61,9 +62,31 @@ This class provides a default error handler which does the following:
 1) Makes a simple HTML page and prints it to the browser, telling the user
 that an error has just occurred.
 
-2) Sends that same HTML to the web address specified in the config, using POST.
+2) Sends an error notification to the web address specified in the config.
 
-The data contained within the POST will match the public properties of L<ASP4::Error>.
+The data contained within the POST will match the public properties of L<ASP4::Error>, like this:
+
+  $VAR1 = {
+            'remote_addr' => '127.0.0.1',
+            'request_uri' => '/',
+            'user_agent' => 'test-useragent v2.0',
+            'file' => '/home/john/Projects/myapp/www/htdocs/index.asp',
+            'session_data' => '{}',
+            'message' => 'A fake error has occurred',
+            'http_code' => '500',
+            'stacktrace' => 'A fake error has occurred at /tmp/PAGE_CACHE/TSR_WWW/__index_asp.pm line 2.
+  ',
+            'domain' => 'www.tsr.local',
+            'form_data' => '{}',
+            'http_referer' => '',
+            'code' => 'line 1: <h1>Hello, world!</h1>
+  line 2: <%
+  line 3:   die "A fake error has occurred";
+  line 4: %>
+  ',
+            'line' => '2'
+  };
+
 
 =head1 PUBLIC METHODS
 

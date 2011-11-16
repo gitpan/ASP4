@@ -5,6 +5,10 @@
 
 [CHANGELOG]
 
+2011-11-16    1.066
+  - Fixed a POD error in ASP4::ErrorHandler::Remote.
+  - ASP4::ErrorHandler::Remote now correctly clones the error object before POSTing it.
+
 2011-11-15    1.065
   - Documented asp4-prep and asp4-deploy.  These are deployment tools for ASP4 apps.
   - Other POD updates here and there.
