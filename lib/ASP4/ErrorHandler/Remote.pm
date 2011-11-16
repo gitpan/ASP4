@@ -41,7 +41,7 @@ sub send_error
 
 =head1 NAME
 
-ASP4::ErrorHandler - Default fatal error handler
+ASP4::ErrorHandler::Remote - Send your errors someplace else via http.
 
 =head1 SYNOPSIS
 

@@ -202,6 +202,15 @@ its Cleanup phase.
 
 See L<http://perl.apache.org/docs/2.0/user/handlers/http.html#PerlCleanupHandler> for details.
 
+=head2 Error( [%args] )
+
+Calling C<<$Server->Error()>> without arguments will use the value of C<$@> and
+generate a L<ASP4::Error> object from it, then pass it to the C<run(...)> method
+of your C<<$Config->errors->error_handler>> for processing.
+
+Please take a look at the documentation for L<ASP4::Error>, L<ASP4::ErrorHandler>
+and L<ASP4::ErrorHandler::Remote> for details on how errors are handled.
+
 =head1 BUGS
 
 It's possible that some bugs have found their way into this release.
