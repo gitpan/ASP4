@@ -20,18 +20,18 @@ sub run
   
   my $error = $Stash->{error};
   
-  $s->print_error( $error, $args );
-  $s->send_error($error, $args);
+  $s->print_error( $error );
+  $s->send_error($error);
 }# end run()
 
 
 sub send_error
 {
-  my ($s, $error, $args) = @_;
+  my ($s, $error) = @_;
   
   $ua ||= LWP::UserAgent->new();
   $ua->agent( ref($s) . " $ASP4::VERSION" );
-  my $req = POST $Config->errors->post_errors_to, $args;
+  my $req = POST $Config->errors->post_errors_to, { %$error };
   $ua->request( $req );
 }# end send_error()
 

@@ -31,7 +31,7 @@ sub new
   my $Config    = $context->config;
   my $Response  = $context->response;
   my $Session   = $context->session;
-  my $Form      = $context->Form;
+  my $Form      = $context->request->Form;
   
   my %session_data = %$Session;
   
@@ -39,7 +39,7 @@ sub new
   if( $err_str )
   {
     my ($main, $message, $file, $line) = $err_str =~ m/^((.*?)\s(?:at|in)\s(.*?)\sline\s(\d+))/;
-    my $error = {
+    $error = {
       message     => $message,
       file        => $file,
       line        => $line,
