@@ -5,6 +5,11 @@
 
 [CHANGELOG]
 
+2011-12-01    1.067
+  - ASP4::GlobalASA is completely deprecated.
+  - ASP4::ErrorHandler contained a bug (cannot find method 'context').  Thanks
+    to ray.baksh++ for discovering it.
+
 2011-11-16    1.066
   - Fixed a POD error in ASP4::ErrorHandler::Remote.
   - ASP4::ErrorHandler::Remote now correctly clones the error object before POSTing it.

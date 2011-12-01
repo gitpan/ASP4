@@ -116,13 +116,13 @@ for the actual web pages themselves.
   use Test::More 'no_plan';
   
   use ASP4::API;
-  my $api; BEGIN { $api = ASP4::API->new }
+  my $api = ASP4::API->new();
   
   ok(
     $api, "Got api"
   );
-  is(
-    $api->ua->get('/hello.asp')->content => 'Hello World!',
+  like(
+    $api->ua->get('/hello.asp')->content => qr/Hello\s+World\!/,
     'Website is friendly'
   );
 

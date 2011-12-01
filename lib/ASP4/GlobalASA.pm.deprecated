@@ -1,5 +1,6 @@
 
-package ASP4::GlobalASA;
+package
+ASP4::GlobalASA;
 
 use strict;
 use warnings 'all';

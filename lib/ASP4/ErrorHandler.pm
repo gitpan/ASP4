@@ -45,7 +45,7 @@ sub send_error
   $Server->Mail(
     To                          => $Config->errors->mail_errors_to,
     From                        => $Config->errors->mail_errors_from,
-    Subject                     => "ASP4: Error in @{[ $ENV{HTTP_HOST} ]}@{[ $s->context->r->uri ]}",
+    Subject                     => "ASP4: Error in @{[ $ENV{HTTP_HOST} ]}@{[ $ENV{REQUEST_URI} ]}",
     'content-type'              => 'text/html',
     'content-transfer-encoding' => 'base64',
     Message                     => encode_base64( $s->error_html($error) ),
