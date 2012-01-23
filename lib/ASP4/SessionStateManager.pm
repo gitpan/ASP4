@@ -5,6 +5,7 @@ use strict;
 use warnings 'all';
 use base 'Ima::DBI::Contextual';
 use HTTP::Date qw( time2iso time2str str2time );
+use Time::HiRes 'gettimeofday';
 use Digest::MD5 'md5_hex';
 use Storable qw( freeze thaw );
 use Scalar::Util 'weaken';
@@ -15,7 +16,7 @@ sub new
 {
   my ($class, $r) = @_;
   my $s = bless { }, $class;
-  my $conn = ASP4::ConfigLoader->load->data_connections->session;
+  my $conn = context()->config->data_connections->session;
   
   local $^W = 0;
   $class->set_db('Session',
@@ -54,7 +55,7 @@ sub is_read_only
 
 sub parse_session_id
 {
-  my $session_config = ASP4::ConfigLoader->load->data_connections->session;
+  my $session_config = context()->config->data_connections->session;
   my $cookie_name = $session_config->cookie_name;
   my ($id) = ($ENV{HTTP_COOKIE}||'') =~ m/\b\Q$cookie_name\E\=([a-f0-9]{32,32})/s;
 
@@ -62,15 +63,14 @@ sub parse_session_id
 }# end parse_session_id()
 
 
-sub new_session_id { md5_hex( rand() . time() . \"" ) }
+sub new_session_id { md5_hex( join ':', ( context()->config->web->www_root, $$, gettimeofday() ) ) }
 
 
 sub write_session_cookie
 {
   my ($s, $r) = @_;
   
-  my $context = ASP4::HTTPContext->current;
-  my $config = $context->config->data_connections->session;
+  my $config = context()->config->data_connections->session;
   my $domain = "";
   unless( $config->cookie_domain eq '*' )
   {
@@ -81,7 +81,7 @@ sub write_session_cookie
   my @cookie = (
     'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain"
   );
-  $context->headers_out->push_header( @cookie );
+  context()->headers_out->push_header( @cookie );
   @cookie;
 }# end write_session_cookie()
 
@@ -94,8 +94,8 @@ sub verify_session_id
   if( $timeout eq '*' )
   {
     local $s->db_Session->{AutoCommit} = 1;
-    my $sth = $s->db_Session->prepare_cached(<<"");
-      SELECT *
+    my $sth = $s->db_Session->prepare(<<"");
+      SELECT count(*)
       FROM asp_sessions
       WHERE session_id = ?
 
@@ -107,13 +107,13 @@ sub verify_session_id
   {
     my $range_start = time() - ( $timeout * 60 );
     local $s->db_Session->{AutoCommit} = 1;
-    my $sth = $s->db_Session->prepare_cached(<<"");
-      SELECT *
+    my $sth = $s->db_Session->prepare(<<"");
+      SELECT count(*)
       FROM asp_sessions
       WHERE session_id = ?
-      AND modified_on BETWEEN ? AND ?
+      AND modified_on - created_on < ?
 
-    $sth->execute( $id, time2iso($range_start), time2iso() );
+    $sth->execute( $id, $timeout );
     ($is_active) = $sth->fetchrow();
     $sth->finish();
   }# end if()
@@ -179,38 +179,6 @@ sub retrieve
   my ($data, $modified_on) = $sth->fetchrow;
   $data = thaw($data) || { SessionID => $id };
   $sth->finish();
-
-  my $max_timeout = $s->context->config->data_connections->session->session_timeout;
-  my $seconds_since_last_modified = time() - str2time($modified_on);
-  if( $max_timeout eq '*' )
-  {
-    if( $seconds_since_last_modified >= 1 )
-    {
-      local $s->db_Session->{AutoCommit} = 1;
-      my $sth = $s->db_Session->prepare_cached(<<"");
-      UPDATE asp_sessions SET
-        modified_on = ?
-      WHERE session_id = ?
-
-      $sth->execute( time2iso(), $id );
-      $sth->finish();
-    }# end if()
-  }
-  else
-  {
-    my $timeout_seconds = $max_timeout * 60;
-    if( $seconds_since_last_modified >= 1 && $seconds_since_last_modified < $timeout_seconds )
-    {
-      local $s->db_Session->{AutoCommit} = 1;
-      my $sth = $s->db_Session->prepare_cached(<<"");
-      UPDATE asp_sessions SET
-        modified_on = ?
-      WHERE session_id = ?
-
-      $sth->execute( time2iso(), $id );
-      $sth->finish();
-    }# end if()
-  }# end if()
   
   $s->{$_} = $data->{$_} for keys %$data;
   
@@ -224,7 +192,7 @@ sub save
   
   return unless $s->{SessionID};
   no warnings 'uninitialized';
-  $s->{__lastMod} = time();
+#  $s->{__lastMod} = time();
   $s->sign;
   
   local $s->db_Session->{AutoCommit} = 1;
