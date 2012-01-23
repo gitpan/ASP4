@@ -4,6 +4,10 @@
 
 [CHANGELOG]
 
+2012-01-22    1.070
+  - No longer check session's last-mod when deciding whether or not to save 
+    session state at the end of a request.
+
 2011-12-11    1.069
   - Fixed META.yml to show the correct github url.
 

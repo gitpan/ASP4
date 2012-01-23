@@ -237,8 +237,6 @@ sub save
   my ($s) = @_;
   
   no warnings 'uninitialized';
-  my $seconds_since_last_modified = time() - $s->{__lastMod};
-  return unless $s->is_changed || ( $seconds_since_last_modified > 60 );
   $s->{__lastMod} = time();
   $s->sign;
   
