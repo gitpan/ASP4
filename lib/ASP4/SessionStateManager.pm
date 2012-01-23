@@ -35,7 +35,6 @@ sub new
   return $s->retrieve( $id );
 }# end new()
 
-
 sub context { ASP4::HTTPContext->current }
 
 sub is_read_only
@@ -78,17 +77,6 @@ sub write_session_cookie
     $domain = "domain=" . ( $config->cookie_domain || $ENV{HTTP_HOST} ) . ";";
   }# end unless()
   my $name = $config->cookie_name;
-  
-  my $expires = "";
-  if( $config->session_timeout eq '*' )
-  {
-    $expires = "";
-  }
-  else
-  {
-    my $expire_time = time2str( time() + ( $config->session_timeout * 60 ) );
-    $expires = "expires=$expire_time;";
-  }# end if()
   
   my @cookie = (
     'Set-Cookie' => "$name=$s->{SessionID}; path=/; $domain"
@@ -224,9 +212,7 @@ sub retrieve
     }# end if()
   }# end if()
   
-  undef(%$s);
-  $s = bless $data, ref($s);
-  weaken($s);
+  $s->{$_} = $data->{$_} for keys %$data;
   
   return $s;
 }# end retrieve()
@@ -236,6 +222,7 @@ sub save
 {
   my ($s) = @_;
   
+  return unless $s->{SessionID};
   no warnings 'uninitialized';
   $s->{__lastMod} = time();
   $s->sign;
@@ -248,7 +235,9 @@ sub save
     WHERE session_id = ?
 
   my %clone = %$s;
+  delete $clone{____is_read_only};
   my $data = freeze( \%clone );
+  
   $sth->execute( $data, time2iso(), $s->{SessionID} );
   $sth->finish();
   
@@ -272,7 +261,7 @@ sub _hash
   md5_hex(
     join ":", 
       map { "$_:$s->{$_}" }
-        grep { $_ ne '__signature' } sort keys(%$s)
+        grep { $_ ne '__signature' && $_ ne '____is_read_only' } sort keys(%$s)
   );
 }# end _hash()
 
@@ -290,7 +279,7 @@ sub reset
 {
   my $s = shift;
   
-  map { delete($s->{$_}) } grep { $_ ne 'SessionID' } keys %$s;
+  delete($s->{$_}) for grep { $_ ne 'SessionID' } keys %$s;
   $s->save;
   return;
 }# end reset()
@@ -299,7 +288,13 @@ sub reset
 sub DESTROY
 {
   my $s = shift;
-  $s->save unless $s->is_read_only;
+  
+  return undef(%$s) unless $s->{SessionID};
+  
+  unless( $s->is_read_only )
+  {
+    $s->save;# if $s->is_changed;
+  }# end unless()
   undef(%$s);
 }# end DESTROY()
 

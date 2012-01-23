@@ -4,6 +4,10 @@
 
 [CHANGELOG]
 
+2012-01-22    1.071
+  - ASP4::HTTPContext now triggers the SessionStateManager's save() method
+    when the context is DESTROY'd.
+
 2012-01-22    1.070
   - No longer check session's last-mod when deciding whether or not to save 
     session state at the end of a request.
