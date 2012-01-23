@@ -4,6 +4,10 @@
 
 [CHANGELOG]
 
+2012-01-23    1.073
+  - Added $Request->Header($name)
+    (Somehow we've gotten along all this time without it.)
+
 2012-01-23    1.072
   - More tweaks on ASP4::SessionStateManager's default internal behavior
     has resulted in some more-than-modest performance gains.
