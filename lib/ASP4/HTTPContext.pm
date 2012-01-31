@@ -260,6 +260,7 @@ sub DESTROY
 {
   my $s = shift;
   $s->session->save if $s->session && ! $s->session->is_read_only;
+  $s = { };
   undef(%$s);
 }# end DESTROY()
 

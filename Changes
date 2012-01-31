@@ -4,6 +4,9 @@
 
 [CHANGELOG]
 
+2012-01-30    1.074
+  - Explicit calls to $Session->save() are no longer necessary.
+
 2012-01-23    1.073
   - Added $Request->Header($name)
     (Somehow we've gotten along all this time without it.)
