@@ -4,6 +4,10 @@
 
 [CHANGELOG]
 
+2012-02-01    1.076
+  - Now, the 'content-type' header is set correctly for ASP4::UserAgent responses.
+  - Works correctly under ASP4::PSGI (images, css, javascript all show up).
+
 2012-02-01    1.075
   - Now, works on Windows!
   - eric.hayes++
