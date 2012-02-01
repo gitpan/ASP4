@@ -4,6 +4,11 @@
 
 [CHANGELOG]
 
+2012-02-01    1.077
+  - Loath to add a mime-types-all-knowing dependency, we have a small list of
+    common mime-types (html, css, js, etc).
+  - Added mime for html and svg.
+
 2012-02-01    1.076
   - Now, the 'content-type' header is set correctly for ASP4::UserAgent responses.
   - Works correctly under ASP4::PSGI (images, css, javascript all show up).

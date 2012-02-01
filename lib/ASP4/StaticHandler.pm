@@ -39,6 +39,8 @@ sub run
     css   => 'text/css',
     pdf   => 'application/x-pdf',
     js    => 'text/javascript',
+    svg   => 'image/svg+xml',
+    html  => 'text/html',
   );
   my $type = $types{lc($ext)} || 'application/octet-stream';
   $Response->ContentType( $type );
