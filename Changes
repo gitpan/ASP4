@@ -4,6 +4,10 @@
 
 [CHANGELOG]
 
+2012-02-02    1.078
+  - Fixed installation problem that came up in v1.075 
+    (compilation root was missing leading forward slash on non-windows systems).
+
 2012-02-01    1.077
   - Loath to add a mime-types-all-knowing dependency, we have a small list of
     common mime-types (html, css, js, etc).

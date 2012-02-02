@@ -107,7 +107,7 @@ sub init_server_root
   }# end unless()
   
   (my $compiled_root = $s->{web}->{page_cache_root} . '/' . $s->{web}->{application_name}) =~ s/::/\//g;
-  my $folder = "";
+  my $folder = $^O =~ m{win32}i ? '' : "/";
   foreach my $part ( grep { $_ } split /[\/\\]/, $compiled_root )
   {
     $folder .= "$part/";
