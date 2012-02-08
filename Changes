@@ -4,6 +4,10 @@
 
 [CHANGELOG]
 
+2012-02-07    1.079
+  - Errors output to the stderr are now derived directly from $@ not from any
+    parsed version of it.
+
 2012-02-02    1.078
   - Fixed installation problem that came up in v1.075 
     (compilation root was missing leading forward slash on non-windows systems).
