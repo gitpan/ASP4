@@ -4,6 +4,11 @@
 
 [CHANGELOG]
 
+2012-02-13    1.081
+  - Updated logging of errors so that it outputs something interesting, instead
+    of a blank line.
+  - Running under mod_perl should now correctly support full RESTful interfaces.
+
 2012-02-12    1.080
   - Added support for multiple external "routes.json" files.
 
