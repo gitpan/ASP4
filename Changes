@@ -4,6 +4,12 @@
 
 [CHANGELOG]
 
+2012-02-24    1.084
+  - The Response->Redirect hack has been removed.
+  - Added concept of 'context->is_subrequest'
+    - this simplifies things a great deal.
+    - ->is_subrequest means that a subrequest context will not clobber ->current.
+
 2012-02-24    1.083
   - A wild Meta.json appeared in 1.082!
 
