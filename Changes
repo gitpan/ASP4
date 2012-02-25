@@ -4,6 +4,11 @@
 
 [CHANGELOG]
 
+2012-02-24    1.085
+  - Fixed ASP4::UserAgent to take advantage of new subrequest option.
+  - Use of the ASP4::API within an existing asp script, handler or request filter
+    is fully-functional now.  Before, the behavior was unpredictable.
+
 2012-02-24    1.084
   - The Response->Redirect hack has been removed.
   - Added concept of 'context->is_subrequest'
