@@ -3,7 +3,7 @@ package ASP4;
 
 use strict;
 use warnings 'all';
-our $VERSION = '1.086';
+our $VERSION = '1.087';
 
 
 1;# return true:
@@ -12,7 +12,11 @@ our $VERSION = '1.086';
 
 =head1 NAME
 
-ASP4 - Fast, Simple and Scalable Web Development for Perl
+ASP4 - Fast, Simple and Scalable Web Development for Perl [DEPRECATED]
+
+=head1 DEPRECATED
+
+ASP4 has been deprecated as of 2012-05-07.
 
 =head1 DESCRIPTION
 
